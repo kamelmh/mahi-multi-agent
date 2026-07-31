@@ -1,0 +1,8 @@
+﻿{
+  "name": "mcp-obsidian-local",
+  "version": "1.0.0",
+  "main": "obsidian.js",
+  "bin": {
+    "mcp-obsidian-local": "obsidian.js"
+  }
+}
