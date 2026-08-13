@@ -1,0 +1,126 @@
+{
+  "agents": [
+    {
+      "name": "CodeAgent",
+      "description": "Python/VBA code generation and debugging",
+      "runtime": "opencode",
+      "skills": ["python-patterns", "vba-patterns", "code-quality"],
+      "squad": "CodeTeam"
+    },
+    {
+      "name": "WriteAgent",
+      "description": "Long-form writing, articles, documentation",
+      "runtime": "opencode",
+      "skills": ["article-writing", "stop-slop", "brand-voice"],
+      "squad": "ContentTeam"
+    },
+    {
+      "name": "ResearchAgent",
+      "description": "Web research, literature review, analysis",
+      "runtime": "opencode",
+      "skills": ["deep-research", "literature-review", "research-ops"],
+      "squad": "ResearchTeam"
+    },
+    {
+      "name": "ArabicAgent",
+      "description": "Arabic text processing, translation, localization",
+      "runtime": "opencode",
+      "skills": ["arabic", "localization"],
+      "squad": "ContentTeam"
+    },
+    {
+      "name": "TeachingAgent",
+      "description": "Education content, exercise generation, curriculum",
+      "runtime": "opencode",
+      "skills": ["education-methodology", "exercise-generation"],
+      "squad": "EducationTeam"
+    },
+    {
+      "name": "CareerAgent",
+      "description": "Freelancing, job applications, career planning",
+      "runtime": "opencode",
+      "skills": ["freelancing-strategy", "career-planning"],
+      "squad": "CareerTeam"
+    },
+    {
+      "name": "DSSAgent",
+      "description": "VBA/Excel DSS development, inventory systems",
+      "runtime": "opencode",
+      "skills": ["vba-patterns", "academix-dss"],
+      "squad": "CodeTeam"
+    },
+    {
+      "name": "SpiritualAgent",
+      "description": "Astrology calculations, spiritual practice",
+      "runtime": "opencode",
+      "skills": ["astrology-calculations", "spiritual-practice"],
+      "squad": "ResearchTeam"
+    },
+    {
+      "name": "QuickAgent",
+      "description": "Fast responses, simple questions, quick tasks",
+      "runtime": "opencode",
+      "skills": ["fast-response"],
+      "squad": null
+    },
+    {
+      "name": "OSSAgent",
+      "description": "Complex reasoning, open-source model tasks",
+      "runtime": "opencode",
+      "skills": ["complex-reasoning"],
+      "squad": null
+    }
+  ],
+  "squads": [
+    {
+      "name": "CodeTeam",
+      "leader": "CodeAgent",
+      "members": ["CodeAgent", "DSSAgent"],
+      "description": "All coding tasks: Python, VBA, debugging"
+    },
+    {
+      "name": "ContentTeam",
+      "leader": "WriteAgent",
+      "members": ["WriteAgent", "ArabicAgent"],
+      "description": "All content: writing, translation, documentation"
+    },
+    {
+      "name": "ResearchTeam",
+      "leader": "ResearchAgent",
+      "members": ["ResearchAgent", "SpiritualAgent"],
+      "description": "Research, analysis, astrology"
+    },
+    {
+      "name": "EducationTeam",
+      "leader": "TeachingAgent",
+      "members": ["TeachingAgent"],
+      "description": "Education content and curriculum"
+    },
+    {
+      "name": "CareerTeam",
+      "leader": "CareerAgent",
+      "members": ["CareerAgent"],
+      "description": "Career and freelancing"
+    }
+  ],
+  "autopilots": [
+    {
+      "name": "DailyMemorySync",
+      "schedule": "0 22 * * *",
+      "description": "Sync memory files at end of day",
+      "task": "Update .session-state.json with today's decisions and pending tasks"
+    },
+    {
+      "name": "WeeklyReview",
+      "schedule": "0 10 * * 0",
+      "description": "Weekly system review",
+      "task": "Review all training systems, update MOCs, check for broken links"
+    },
+    {
+      "name": "TrainingStatusCheck",
+      "schedule": "0 9 * * 1",
+      "description": "Weekly training status update",
+      "task": "Check all 10 training systems, update dashboard, report pending items"
+    }
+  ]
+}

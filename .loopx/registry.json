@@ -1,0 +1,19 @@
+{
+  "version": "1.0",
+  "project": "MAHI-Multi-Agent-System",
+  "description": "MAHI 10-agent orchestration system with specialized routing",
+  "agents": [
+    {"id": "code", "name": "Code Agent", "model": "groq/gpt-oss-20b", "capability": "code-generation"},
+    {"id": "write", "name": "Write Agent", "model": "groq/qwen3-32b", "capability": "long-form-writing"},
+    {"id": "fast", "name": "Fast Agent", "model": "groq/llama-3.1-8b", "capability": "quick-tasks"},
+    {"id": "oss", "name": "OSS Agent", "model": "groq/gpt-oss-120b", "capability": "complex-reasoning"},
+    {"id": "arabic", "name": "Arabic Agent", "model": "groq/allam-2-7b", "capability": "arabic-text"},
+    {"id": "research", "name": "Research Agent", "model": "deepseek-v4-flash", "capability": "deep-research"},
+    {"id": "dss", "name": "DSS Agent", "model": "groq/gpt-oss-20b", "capability": "data-analysis"},
+    {"id": "teaching", "name": "Teaching Agent", "model": "groq/qwen3-32b", "capability": "education"},
+    {"id": "career", "name": "Career Agent", "model": "groq/llama-3.3-70b", "capability": "career-planning"},
+    {"id": "spiritual", "name": "Spiritual Agent", "model": "groq/allam-2-7b", "capability": "spiritual-practice"}
+  ],
+  "created": "2026-08-06",
+  "status": "initialized"
+}

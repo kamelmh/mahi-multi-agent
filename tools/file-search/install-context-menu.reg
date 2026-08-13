@@ -1,0 +1,29 @@
+Windows Registry Editor Version 5.00
+
+; ============================================
+; FileSearch Context Menu - Right Click Install
+; ============================================
+
+; Add "Find & Open Folder" to right-click on desktop/folders
+[HKEY_CLASSES_ROOT\Directory\shell\FileSearch]
+@="Find & Open Folder"
+"Icon"="imageres.dll,73"
+
+[HKEY_CLASSES_ROOT\Directory\shell\FileSearch\command]
+@="cmd /c \"python \"C:\\Users\\Admin\\Projects\\active\\file-search\\filesearch_open.py\" \"%V\"\""
+
+; Add to folder background (right-click on empty space in folder)
+[HKEY_CLASSES_ROOT\Directory\Background\shell\FileSearch]
+@="Search Files Here"
+"Icon"="imageres.dll,73"
+
+[HKEY_CLASSES_ROOT\Directory\Background\shell\FileSearch\command]
+@="cmd /c \"python \"C:\\Users\\Admin\\Projects\\active\\file-search\\filesearch.py\" --root \"%V\" -n 30 & pause\""
+
+; Add to file context menu
+[HKEY_CLASSES_ROOT\Directory\shell\FileSearchDeep]
+@="Search From Here"
+"Icon"="imageres.dll,73"
+
+[HKEY_CLASSES_ROOT\Directory\shell\FileSearchDeep\command]
+@="cmd /c \"python \"C:\\Users\\Admin\\Projects\\active\\file-search\\filesearch.py\" --root \"%V\" -n 30 & pause\""

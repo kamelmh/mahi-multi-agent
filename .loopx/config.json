@@ -1,0 +1,19 @@
+{
+  "version": "1.0",
+  "project_name": "MAHI-Multi-Agent-System",
+  "project_root": "C:\Users\Admin\MAHI",
+  "goals_dir": ".codex/goals",
+  "registry_file": ".loopx/registry.json",
+  "agents": {
+    "code": {"command": "python mahi_bridge.py --agent code", "timeout": 30},
+    "write": {"command": "python mahi_bridge.py --agent write", "timeout": 30},
+    "fast": {"command": "python mahi_bridge.py --agent fast", "timeout": 15},
+    "oss": {"command": "python mahi_bridge.py --agent oss", "timeout": 30},
+    "arabic": {"command": "python mahi_bridge.py --agent arabic", "timeout": 30},
+    "research": {"command": "python mahi_bridge.py --agent research", "timeout": 60},
+    "dss": {"command": "python mahi_bridge.py --agent dss", "timeout": 30},
+    "teaching": {"command": "python mahi_bridge.py --agent teaching", "timeout": 30},
+    "career": {"command": "python mahi_bridge.py --agent career", "timeout": 30},
+    "spiritual": {"command": "python mahi_bridge.py --agent spiritual", "timeout": 30}
+  }
+}
