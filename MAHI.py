@@ -35,6 +35,7 @@ from agents.spiritual_agent import create_spiritual_agent
 from router.classifier import classify
 from orchestrator.engine import Orchestrator
 from agents.base import Task, TaskState
+from command_center import CommandCenter
 
 
 # Registry of all agents
@@ -57,6 +58,7 @@ class MahiSystem:
 
     def __init__(self):
         self.orchestrator = Orchestrator()
+        self.command_center = CommandCenter()
         self.agents = {}
         self._register_agents()
 
@@ -189,12 +191,15 @@ class MahiSystem:
 
         elif cmd in ("/help", "/h"):
             print("\n  Commands:")
-            print("    /agents  - List all agents")
-            print("    /status  - System status")
-            print("    /model   - Model routing")
-            print("    /history - Recent tasks")
-            print("    /help    - This help")
-            print("    /exit    - Exit")
+            print("    /agents    - List all agents")
+            print("    /status    - System status")
+            print("    /model     - Model routing")
+            print("    /history   - Recent tasks")
+            print("    /briefing  - Daily briefing (vault + sessions)")
+            print("    /session   - Session intelligence")
+            print("    /vault     - Obsidian vault access")
+            print("    /help      - This help")
+            print("    /exit      - Exit")
 
         elif cmd in ("/agents", "/a"):
             print("\n  Agents:")
@@ -222,6 +227,20 @@ class MahiSystem:
                     print(f"  [{icon}] {t.id} | {t.agent_id} | {t.elapsed}s | {t.category}")
             else:
                 print("  No tasks completed yet")
+
+        elif cmd.startswith("/briefing"):
+            print(self.command_center.briefing())
+
+        elif cmd.startswith("/session"):
+            parts = cmd.split(maxsplit=1)
+            subcmd = parts[1] if len(parts) > 1 else "summary"
+            print(self.command_center.session(subcmd))
+
+        elif cmd.startswith("/vault"):
+            parts = cmd.split(maxsplit=2)
+            subcmd = parts[1] if len(parts) > 1 else "vault"
+            args = parts[2].split() if len(parts) > 2 else []
+            print(self.command_center.vault(subcmd, *args))
 
         else:
             print(f"  Unknown command: {cmd}")

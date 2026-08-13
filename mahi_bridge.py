@@ -6,7 +6,7 @@ import sys
 import os
 
 # Add MAHI to path
-sys.path.insert(0, r"C:\Users\Admin\MAHI")
+sys.path.insert(0, str(Path(__file__).parent))
 
 from router.classifier import classify
 from agents.code_agent import create_code_agent
