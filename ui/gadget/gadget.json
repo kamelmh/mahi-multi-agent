@@ -1,0 +1,60 @@
+{
+  "name": "LifeWorkspace",
+  "version": "1.0.0",
+  "description": "Personal knowledge management system with 466 notes, 422 PDFs, 12 training systems (57 components), 405 skills, 10 agents, 3 autopilots, 5 goals",
+  "blueprint": {
+    "name": "LifeWorkspace Knowledge System",
+    "author": "MAHI Kamel Abdelghani",
+    "category": "productivity",
+    "tags": ["knowledge-management", "obsidian", "education", "astrology", "agents", "autopilots"],
+    "icon": "🧠"
+  },
+  "server": {
+    "entry": "server.ts",
+    "port": 8787,
+    "durable_object": true
+  },
+  "client": {
+    "entry": "client.ts",
+    "framework": "vanilla"
+  },
+  "gatekeepers": [
+    {
+      "name": "google-drive",
+      "type": "oauth",
+      "service": "Google Drive",
+      "permissions": ["read", "write"],
+      "description": "Sync LifeWorkspace with Google Drive"
+    },
+    {
+      "name": "github",
+      "type": "oauth",
+      "service": "GitHub",
+      "permissions": ["read", "write"],
+      "description": "Access GitHub repos and issues"
+    },
+    {
+      "name": "obsidian",
+      "type": "local",
+      "service": "Obsidian Vault",
+      "permissions": ["read"],
+      "description": "Read Obsidian vault files"
+    }
+  ],
+  "features": [
+    "Knowledge graph visualization",
+    "Training systems dashboard with 4 views (Overview, All, Pending, By Status)",
+    "Agent control panel (10 agents, 5 squads)",
+    "Autopilot management (3 scheduled automations)",
+    "Goal tracking (5 goals, 29 tasks)",
+    "Memory system browser",
+    "Wiki-link explorer",
+    "Search across all notes",
+    "Quick capture / inbox",
+    "Bookmarks and favorites",
+    "Daily journal",
+    "Tag system with cloud",
+    "Version history",
+    "8 templates"
+  ]
+}

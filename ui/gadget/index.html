@@ -1,0 +1,2186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeWorkspace Knowledge System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #080b12;
+            --bg-secondary: #0e1219;
+            --bg-card: #111620;
+            --bg-elevated: #161c28;
+            --border: #1e2736;
+            --border-glow: #2a3a52;
+            --text-primary: #e8ecf4;
+            --text-secondary: #7a8599;
+            --text-muted: #4a5568;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #06b6d4;
+            --accent-emerald: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-rose: #f43f5e;
+            --accent-violet: #8b5cf6;
+            --gradient-hero: linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #10b981 100%);
+            --gradient-warm: linear-gradient(135deg, #f59e0b 0%, #f43f5e 100%);
+            --gradient-cool: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+            --glass: rgba(14, 18, 25, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.06);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; overflow-x: hidden; }
+        body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(ellipse 80% 50% at 20% 20%, rgba(59,130,246,0.08) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 80% 80%, rgba(6,182,212,0.06) 0%, transparent 60%); pointer-events: none; z-index: 0; }
+        .noise { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
+        .container { max-width: 1280px; margin: 0 auto; padding: 24px 32px; position: relative; z-index: 1; }
+        header { display: flex; align-items: center; justify-content: space-between; padding: 20px 0 32px; }
+        .logo-group { display: flex; align-items: center; gap: 16px; }
+        .logo-icon { width: 48px; height: 48px; background: var(--gradient-hero); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 24px rgba(59,130,246,0.3); }
+        .logo-text h1 { font-size: 1.6rem; font-weight: 700; background: var(--gradient-hero); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.02em; }
+        .logo-text .tagline { font-size: 0.82rem; color: var(--text-secondary); font-weight: 300; letter-spacing: 0.02em; }
+        .header-actions { display: flex; gap: 10px; align-items: center; }
+        .session-badge { display: flex; align-items: center; gap: 8px; padding: 8px 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; font-size: 0.78rem; color: var(--text-secondary); }
+        .session-dot { width: 7px; height: 7px; background: var(--accent-emerald); border-radius: 50%; animation: pulse-dot 2s ease-in-out infinite; }
+        @keyframes pulse-dot { 0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(16,185,129,0.4); } 50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(16,185,129,0); } }
+        .time-display { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: var(--text-muted); }
+        .search-wrapper { position: relative; margin-bottom: 28px; }
+        .search-icon { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1rem; }
+        .search { width: 100%; padding: 14px 20px 14px 48px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; color: var(--text-primary); font-family: 'Outfit', sans-serif; font-size: 0.95rem; transition: all 0.3s ease; }
+        .search:focus { outline: none; border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(59,130,246,0.15), 0 8px 32px rgba(0,0,0,0.3); }
+        .search::placeholder { color: var(--text-muted); }
+        .search-shortcut { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); padding: 3px 8px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--text-muted); }
+        .nav { display: flex; gap: 4px; margin-bottom: 28px; padding: 4px; background: var(--bg-secondary); border-radius: 12px; border: 1px solid var(--border); width: fit-content; flex-wrap: wrap; }
+        .nav-btn { padding: 9px 14px; background: transparent; border: none; border-radius: 9px; color: var(--text-secondary); font-family: 'Outfit', sans-serif; font-size: 0.82rem; font-weight: 500; cursor: pointer; transition: all 0.25s ease; white-space: nowrap; }
+        .nav-btn:hover { color: var(--text-primary); background: rgba(255,255,255,0.04); }
+        .nav-btn.active { background: var(--accent-blue); color: #fff; box-shadow: 0 2px 12px rgba(59,130,246,0.3); }
+        .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+        .stat { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 22px 20px; position: relative; overflow: hidden; transition: all 0.3s ease; }
+        .stat::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--gradient-hero); opacity: 0; transition: opacity 0.3s; }
+        .stat:hover { border-color: var(--border-glow); transform: translateY(-2px); }
+        .stat:hover::before { opacity: 1; }
+        .stat-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; margin-bottom: 14px; }
+        .stat-icon.blue { background: rgba(59,130,246,0.12); }
+        .stat-icon.cyan { background: rgba(6,182,212,0.12); }
+        .stat-icon.emerald { background: rgba(16,185,129,0.12); }
+        .stat-icon.violet { background: rgba(139,92,246,0.12); }
+        .stat-value { font-size: 2rem; font-weight: 700; letter-spacing: -0.03em; line-height: 1; margin-bottom: 6px; }
+        .stat-value.blue { color: var(--accent-blue); }
+        .stat-value.cyan { color: var(--accent-cyan); }
+        .stat-value.emerald { color: var(--accent-emerald); }
+        .stat-value.violet { color: var(--accent-violet); }
+        .stat-label { font-size: 0.82rem; color: var(--text-secondary); font-weight: 400; }
+        .stat-trend { display: inline-flex; align-items: center; gap: 3px; margin-top: 8px; padding: 2px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 600; }
+        .stat-trend.up { background: rgba(16,185,129,0.1); color: var(--accent-emerald); }
+        .stat-trend.stable { background: rgba(122,133,153,0.1); color: var(--text-secondary); }
+        .main-grid { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
+        .section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 22px; margin-bottom: 20px; }
+        .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+        .section-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
+        .section-badge { padding: 3px 10px; background: rgba(59,130,246,0.1); color: var(--accent-blue); border-radius: 6px; font-size: 0.72rem; font-weight: 600; }
+        .projects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .project-card { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; }
+        .project-card::after { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; border-radius: 0 3px 3px 0; transition: opacity 0.3s; }
+        .project-card.blue::after { background: var(--accent-blue); }
+        .project-card.cyan::after { background: var(--accent-cyan); }
+        .project-card.emerald::after { background: var(--accent-emerald); }
+        .project-card.amber::after { background: var(--accent-amber); }
+        .project-card.rose::after { background: var(--accent-rose); }
+        .project-card.violet::after { background: var(--accent-violet); }
+        .project-card:hover { border-color: var(--border-glow); transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        .project-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
+        .project-icon { width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+        .project-icon.blue { background: rgba(59,130,246,0.12); }
+        .project-icon.cyan { background: rgba(6,182,212,0.12); }
+        .project-icon.emerald { background: rgba(16,185,129,0.12); }
+        .project-icon.amber { background: rgba(245,158,11,0.12); }
+        .project-icon.rose { background: rgba(244,63,94,0.12); }
+        .project-icon.violet { background: rgba(139,92,246,0.12); }
+        .project-status { padding: 3px 8px; border-radius: 6px; font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+        .project-status.active { background: rgba(16,185,129,0.12); color: var(--accent-emerald); }
+        .project-status.planning { background: rgba(245,158,11,0.12); color: var(--accent-amber); }
+        .project-status.blocked { background: rgba(244,63,94,0.12); color: var(--accent-rose); }
+        .project-name { font-size: 0.88rem; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+        .project-desc { font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.4; }
+        .project-progress { display: flex; align-items: center; gap: 10px; }
+        .progress-bar { flex: 1; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 3px; transition: width 1s ease; }
+        .progress-fill.blue { background: var(--gradient-hero); }
+        .progress-fill.emerald { background: linear-gradient(90deg, #10b981, #06b6d4); }
+        .progress-fill.amber { background: var(--gradient-warm); }
+        .progress-fill.rose { background: linear-gradient(90deg, #f43f5e, #f59e0b); }
+        .progress-fill.violet { background: var(--gradient-cool); }
+        .progress-pct { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--text-muted); min-width: 32px; text-align: right; }
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        .agents-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .agent-chip { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px; transition: all 0.2s; cursor: pointer; }
+        .agent-chip:hover { border-color: var(--border-glow); }
+        .agent-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+        .agent-dot.online { background: var(--accent-emerald); }
+        .agent-dot.idle { background: var(--accent-amber); }
+        .agent-name { font-size: 0.76rem; font-weight: 500; color: var(--text-primary); }
+        .agent-model { font-size: 0.66rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+        .activity-list { display: flex; flex-direction: column; gap: 2px; }
+        .activity-item { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .activity-item:last-child { border-bottom: none; }
+        .activity-icon { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; }
+        .activity-icon.study { background: rgba(59,130,246,0.12); }
+        .activity-icon.code { background: rgba(16,185,129,0.12); }
+        .activity-icon.write { background: rgba(139,92,246,0.12); }
+        .activity-icon.freelance { background: rgba(245,158,11,0.12); }
+        .activity-text { font-size: 0.8rem; color: var(--text-primary); line-height: 1.4; }
+        .activity-time { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+        .actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .action-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 14px 8px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px; color: var(--text-secondary); font-family: 'Outfit', sans-serif; font-size: 0.72rem; font-weight: 500; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+        .action-btn:hover { border-color: var(--accent-blue); color: var(--text-primary); background: rgba(59,130,246,0.06); }
+        .action-icon { font-size: 1.2rem; }
+        .hidden { display: none !important; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-in { animation: fadeInUp 0.5s ease forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+
+        /* === NEW PKMS STYLES === */
+        .graph-canvas { width: 100%; height: 500px; background: var(--bg-elevated); border-radius: 12px; border: 1px solid var(--border); cursor: grab; position: relative; overflow: hidden; }
+        .graph-canvas:active { cursor: grabbing; }
+        .graph-legend { display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap; }
+        .graph-legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.72rem; color: var(--text-secondary); }
+        .graph-legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+        .note-view { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 12px; padding: 24px; min-height: 400px; }
+        .note-view h2 { font-size: 1.2rem; margin-bottom: 12px; color: var(--text-primary); }
+        .note-view .note-meta { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+        .note-tag { padding: 3px 10px; background: rgba(59,130,246,0.1); color: var(--accent-blue); border-radius: 6px; font-size: 0.72rem; cursor: pointer; transition: all 0.2s; }
+        .note-tag:hover { background: rgba(59,130,246,0.2); }
+        .note-tag.active { background: var(--accent-blue); color: #fff; }
+        .note-body { font-size: 0.88rem; line-height: 1.7; color: var(--text-secondary); }
+        .note-body .wikilink { color: var(--accent-blue); cursor: pointer; text-decoration: underline; text-decoration-style: dotted; }
+        .note-body .wikilink:hover { color: var(--accent-cyan); }
+
+        .backlinks-panel { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+        .backlinks-panel h3 { font-size: 0.88rem; margin-bottom: 12px; color: var(--text-primary); }
+        .backlink-item { padding: 10px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; }
+        .backlink-item:hover { border-color: var(--accent-blue); }
+        .backlink-item .bl-title { font-size: 0.82rem; font-weight: 600; color: var(--accent-blue); margin-bottom: 4px; }
+        .backlink-item .bl-excerpt { font-size: 0.75rem; color: var(--text-muted); line-height: 1.4; }
+
+        .tag-cloud { display: flex; flex-wrap: wrap; gap: 8px; }
+        .tag-pill { padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 500; cursor: pointer; transition: all 0.2s; border: 1px solid var(--border); background: var(--bg-elevated); color: var(--text-secondary); }
+        .tag-pill:hover { border-color: var(--accent-blue); color: var(--text-primary); }
+        .tag-pill.active { background: var(--accent-blue); color: #fff; border-color: var(--accent-blue); }
+        .tag-pill .tag-count { margin-left: 4px; opacity: 0.6; }
+
+        .inbox-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; }
+        .inbox-item:hover { border-color: var(--accent-amber); }
+        .inbox-item .inbox-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-amber); flex-shrink: 0; }
+        .inbox-item .inbox-text { font-size: 0.82rem; color: var(--text-primary); flex: 1; }
+        .inbox-item .inbox-time { font-size: 0.7rem; color: var(--text-muted); }
+
+        .quick-capture { display: flex; gap: 8px; margin-bottom: 20px; }
+        .quick-capture input { flex: 1; padding: 12px 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; color: var(--text-primary); font-family: 'Outfit', sans-serif; font-size: 0.88rem; }
+        .quick-capture input:focus { outline: none; border-color: var(--accent-blue); }
+        .quick-capture button { padding: 12px 20px; background: var(--accent-blue); color: #fff; border: none; border-radius: 10px; font-family: 'Outfit', sans-serif; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .quick-capture button:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        .journal-entry { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 12px; }
+        .journal-entry .je-date { font-size: 0.75rem; color: var(--accent-blue); font-weight: 600; margin-bottom: 8px; font-family: 'JetBrains Mono', monospace; }
+        .journal-entry .je-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 8px; }
+        .journal-entry .je-body { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6; }
+        .journal-entry .je-tags { display: flex; gap: 6px; margin-top: 10px; }
+
+        .template-card { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s; }
+        .template-card:hover { border-color: var(--accent-violet); transform: translateY(-1px); }
+        .template-card .tc-icon { font-size: 1.5rem; margin-bottom: 8px; }
+        .template-card .tc-name { font-size: 0.88rem; font-weight: 600; margin-bottom: 4px; }
+        .template-card .tc-desc { font-size: 0.75rem; color: var(--text-muted); }
+
+        .version-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .version-item:last-child { border-bottom: none; }
+        .version-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent-emerald); margin-top: 4px; flex-shrink: 0; }
+        .version-info .vi-time { font-size: 0.72rem; color: var(--accent-emerald); font-family: 'JetBrains Mono', monospace; }
+        .version-info .vi-note { font-size: 0.82rem; color: var(--text-primary); margin-top: 2px; }
+        .version-info .vi-changes { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+
+        .recent-item { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; }
+        .recent-item:hover { border-color: var(--accent-cyan); }
+        .recent-item .ri-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; background: rgba(6,182,212,0.12); flex-shrink: 0; }
+        .recent-item .ri-title { font-size: 0.82rem; font-weight: 500; }
+        .recent-item .ri-time { font-size: 0.7rem; color: var(--text-muted); }
+
+        .bookmark-star { cursor: pointer; transition: all 0.2s; font-size: 1rem; }
+        .bookmark-star:hover { transform: scale(1.2); }
+
+        /* === TRAINING DASHBOARD === */
+        .training-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .training-metric {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            text-align: center;
+        }
+        .training-metric .metric-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .training-metric .metric-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+        .training-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+        .training-tab {
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .training-tab.active {
+            background: rgba(99, 179, 237, 0.15);
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+        .training-tab:hover { background: rgba(255,255,255,0.05); }
+        .training-expand-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+        .training-expand-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .training-expand-header:hover { background: rgba(255,255,255,0.03); }
+        .training-expand-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .training-expand-icon {
+            font-size: 1.3rem;
+        }
+        .training-expand-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .training-expand-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .training-expand-pct {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent-blue);
+        }
+        .training-expand-chevron {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            transition: transform 0.2s;
+        }
+        .training-expand-card.open .training-expand-chevron {
+            transform: rotate(180deg);
+        }
+        .training-expand-body {
+            display: none;
+            padding: 0 16px 14px 40px;
+        }
+        .training-expand-card.open .training-expand-body {
+            display: block;
+        }
+        .training-progress-mini {
+            height: 4px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 2px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+        .training-progress-mini-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.4s ease;
+        }
+        .training-component {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+            font-size: 0.78rem;
+        }
+        .training-comp-icon {
+            width: 18px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .training-comp-name {
+            font-weight: 500;
+            flex: 1;
+        }
+        .training-comp-detail {
+            color: var(--text-muted);
+            font-size: 0.72rem;
+        }
+        .training-pending-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            margin-bottom: 6px;
+        }
+        .training-pending-sys {
+            font-weight: 600;
+            font-size: 0.8rem;
+            min-width: 140px;
+        }
+        .training-pending-name {
+            flex: 1;
+            font-size: 0.78rem;
+        }
+        .training-pending-detail {
+            color: var(--text-muted);
+            font-size: 0.72rem;
+        }
+        .training-status-group {
+            margin-bottom: 16px;
+        }
+        .training-status-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--border);
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .status-badge.active { background: rgba(72, 187, 120, 0.15); color: var(--accent-emerald); }
+        .status-badge.waiting { background: rgba(99, 179, 237, 0.15); color: var(--accent-blue); }
+        .status-badge.planning { background: rgba(236, 201, 75, 0.15); color: var(--accent-amber); }
+        .status-badge.partial { background: rgba(237, 137, 54, 0.15); color: #ed8936; }
+
+        /* === AGENT CONTROL PANEL === */
+        .agent-control-card { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 12px; transition: all 0.3s; }
+        .agent-control-card:hover { border-color: var(--border-glow); }
+        .agent-control-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .agent-control-name { font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .agent-control-model { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; }
+        .agent-control-skills { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+        .agent-control-skills .note-tag { font-size: 0.68rem; }
+        .agent-control-actions { display: flex; gap: 8px; }
+        .agent-btn { padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); font-family: 'Outfit', sans-serif; font-size: 0.78rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+        .agent-btn:hover { border-color: var(--accent-blue); color: var(--text-primary); }
+        .agent-btn.primary { background: var(--accent-blue); color: #fff; border-color: var(--accent-blue); }
+        .agent-btn.primary:hover { opacity: 0.9; }
+        .agent-btn.danger { border-color: var(--accent-rose); color: var(--accent-rose); }
+        .agent-btn.danger:hover { background: rgba(244,63,94,0.1); }
+        .squad-group { margin-bottom: 24px; }
+        .squad-group-title { font-size: 0.88rem; font-weight: 600; color: var(--accent-blue); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .squad-group-title .squad-count { font-size: 0.72rem; color: var(--text-muted); font-weight: 400; }
+        .status-badge { padding: 4px 10px; border-radius: 6px; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+        .status-badge.online { background: rgba(16,185,129,0.12); color: var(--accent-emerald); }
+        .status-badge.idle { background: rgba(245,158,11,0.12); color: var(--accent-amber); }
+        .status-badge.running { background: rgba(59,130,246,0.12); color: var(--accent-blue); animation: pulse-badge 1.5s ease-in-out infinite; }
+        .status-badge.error { background: rgba(244,63,94,0.12); color: var(--accent-rose); }
+        .status-badge.paused { background: rgba(122,133,153,0.12); color: var(--text-secondary); }
+        @keyframes pulse-badge { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+        /* === AUTOPILOTS === */
+        .autopilot-card { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 12px; transition: all 0.3s; }
+        .autopilot-card:hover { border-color: var(--border-glow); }
+        .autopilot-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .autopilot-name { font-size: 1rem; font-weight: 600; }
+        .autopilot-schedule { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--accent-cyan); margin-bottom: 6px; }
+        .autopilot-desc { font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 10px; line-height: 1.5; }
+        .autopilot-meta { display: flex; gap: 16px; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; }
+        .autopilot-meta span { display: flex; align-items: center; gap: 4px; }
+        .toggle-switch { position: relative; width: 44px; height: 24px; cursor: pointer; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { position: absolute; inset: 0; background: var(--border); border-radius: 12px; transition: all 0.3s; }
+        .toggle-slider::before { content: ''; position: absolute; width: 18px; height: 18px; border-radius: 50%; background: var(--text-muted); top: 3px; left: 3px; transition: all 0.3s; }
+        .toggle-switch input:checked + .toggle-slider { background: var(--accent-blue); }
+        .toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); background: #fff; }
+
+        /* === GOALS === */
+        .goal-card { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 12px; transition: all 0.3s; }
+        .goal-card:hover { border-color: var(--border-glow); }
+        .goal-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
+        .goal-title { font-size: 1rem; font-weight: 600; }
+        .goal-desc { font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.5; }
+        .goal-meta { display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+        .goal-meta-item { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--text-muted); }
+        .goal-progress { margin-bottom: 12px; }
+        .goal-progress-header { display: flex; justify-content: space-between; margin-bottom: 6px; }
+        .goal-progress-label { font-size: 0.78rem; color: var(--text-secondary); }
+        .goal-progress-pct { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--accent-blue); }
+        .goal-tasks { margin-top: 12px; }
+        .goal-task { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 0.82rem; }
+        .goal-task:last-child { border-bottom: none; }
+        .goal-task-check { width: 16px; height: 16px; border-radius: 4px; border: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; transition: all 0.2s; flex-shrink: 0; }
+        .goal-task-check.done { background: var(--accent-emerald); border-color: var(--accent-emerald); color: #fff; }
+        .goal-task-text { flex: 1; color: var(--text-secondary); }
+        .goal-task-text.done { text-decoration: line-through; opacity: 0.5; }
+        .goal-agents { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+        .goal-agent-chip { padding: 4px 10px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; font-size: 0.72rem; color: var(--text-secondary); display: flex; align-items: center; gap: 4px; }
+        .goal-agent-chip .agent-dot { width: 5px; height: 5px; }
+
+        @media (max-width: 900px) { .main-grid { grid-template-columns: 1fr; } .stats { grid-template-columns: repeat(2, 1fr); } .projects-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 600px) { .container { padding: 16px; } .stats { grid-template-columns: 1fr; } header { flex-direction: column; gap: 16px; align-items: flex-start; } .nav { width: 100%; overflow-x: auto; } }
+    </style>
+</head>
+<body>
+    <div class="noise"></div>
+    <div class="container">
+        <header class="animate-in">
+            <div class="logo-group">
+                <div class="logo-icon">🧠</div>
+                <div class="logo-text">
+                    <h1>LifeWorkspace</h1>
+                    <div class="tagline">Personal Knowledge Management System</div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="session-badge">
+                    <div class="session-dot"></div>
+                    <span>Session Active</span>
+                </div>
+                <div class="time-display" id="clock"></div>
+            </div>
+        </header>
+
+        <div class="search-wrapper animate-in delay-1">
+            <span class="search-icon">⌕</span>
+            <input type="text" class="search" placeholder="Search notes, tags, projects, skills..." id="search">
+            <span class="search-shortcut">⌘K</span>
+        </div>
+
+        <div class="nav animate-in delay-2" id="main-nav">
+            <button class="nav-btn active" onclick="showSection('overview')">Overview</button>
+            <button class="nav-btn" onclick="showSection('graph')">Graph</button>
+            <button class="nav-btn" onclick="showSection('journal')">Journal</button>
+            <button class="nav-btn" onclick="showSection('notes')">Notes</button>
+            <button class="nav-btn" onclick="showSection('tags')">Tags</button>
+            <button class="nav-btn" onclick="showSection('inbox')">Inbox</button>
+            <button class="nav-btn" onclick="showSection('bookmarks')">Bookmarks</button>
+            <button class="nav-btn" onclick="showSection('recent')">Recent</button>
+            <button class="nav-btn" onclick="showSection('history')">History</button>
+            <button class="nav-btn" onclick="showSection('templates')">Templates</button>
+            <button class="nav-btn" onclick="showSection('training')">Training</button>
+            <button class="nav-btn" onclick="showSection('agents')">Agents</button>
+            <button class="nav-btn" onclick="showSection('agents-live')">Agent Control</button>
+            <button class="nav-btn" onclick="showSection('autopilots')">Autopilots</button>
+            <button class="nav-btn" onclick="showSection('goals')">Goals</button>
+            <button class="nav-btn" onclick="showSection('skills')">Skills</button>
+            <button class="nav-btn" onclick="showSection('projects')">Projects</button>
+            <button class="nav-btn" onclick="showSection('academix')">Academix</button>
+        </div>
+
+        <!-- OVERVIEW -->
+        <div id="overview">
+            <div class="stats">
+                <div class="stat animate-in delay-1">
+                    <div class="stat-icon blue">📝</div>
+                    <div class="stat-value blue" data-target="466">0</div>
+                    <div class="stat-label">Notes</div>
+                    <div class="stat-trend up">↑ 12 this week</div>
+                </div>
+                <div class="stat animate-in delay-2">
+                    <div class="stat-icon cyan">📄</div>
+                    <div class="stat-value cyan" data-target="422">0</div>
+                    <div class="stat-label">PDFs Summarized</div>
+                    <div class="stat-trend stable">→ stable</div>
+                </div>
+                <div class="stat animate-in delay-3">
+                    <div class="stat-icon emerald">🔄</div>
+                    <div class="stat-value emerald" data-target="12">0</div>
+                    <div class="stat-label">Training Systems</div>
+                    <div class="stat-trend up">↑ 3 new</div>
+                </div>
+                <div class="stat animate-in delay-4">
+                    <div class="stat-icon violet">🕸️</div>
+                    <div class="stat-value violet" data-target="405">0</div>
+                    <div class="stat-label">Skills Installed</div>
+                    <div class="stat-trend up">↑ 323 new</div>
+                </div>
+            </div>
+            <div class="main-grid">
+                <div>
+                    <div class="section animate-in delay-3">
+                        <div class="section-header">
+                            <div class="section-title">Active Projects <span class="section-badge">10 active</span></div>
+                        </div>
+                        <div class="projects-grid" id="projects-grid"></div>
+                    </div>
+                </div>
+                <div class="sidebar">
+                    <div class="section animate-in delay-2">
+                        <div class="section-header"><div class="section-title">Quick Capture</div></div>
+                        <div class="quick-capture">
+                            <input type="text" id="capture-input" placeholder="Capture a thought...">
+                            <button onclick="quickCapture()">Save</button>
+                        </div>
+                    </div>
+                    <div class="section animate-in delay-2">
+                        <div class="section-header"><div class="section-title">Quick Actions</div></div>
+                        <div class="actions-grid">
+                            <a class="action-btn" href="obsidian://open?vault=LifeWorkspace"><span class="action-icon">📚</span>Open Vault</a>
+                            <a class="action-btn" href="http://localhost:8000"><span class="action-icon">🌌</span>AstroDashboard</a>
+                            <a class="action-btn" href="https://github.com"><span class="action-icon">💻</span>GitHub</a>
+                            <a class="action-btn" onclick="showSection('inbox')"><span class="action-icon">📥</span>Inbox</a>
+                        </div>
+                    </div>
+                    <div class="section animate-in delay-3">
+                        <div class="section-header"><div class="section-title">Recent Activity</div></div>
+                        <div class="activity-list" id="activity-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GRAPH VIEW -->
+        <div id="graph" class="hidden">
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">Knowledge Graph <span class="section-badge" id="graph-count">0 nodes</span></div>
+                </div>
+                <canvas id="graph-canvas" class="graph-canvas"></canvas>
+                <div class="graph-legend">
+                    <div class="graph-legend-item"><div class="graph-legend-dot" style="background:var(--accent-blue)"></div>Projects</div>
+                    <div class="graph-legend-item"><div class="graph-legend-dot" style="background:var(--accent-emerald)"></div>Skills</div>
+                    <div class="graph-legend-item"><div class="graph-legend-dot" style="background:var(--accent-violet)"></div>Memory</div>
+                    <div class="graph-legend-item"><div class="graph-legend-dot" style="background:var(--accent-amber)"></div>Journal</div>
+                    <div class="graph-legend-item"><div class="graph-legend-dot" style="background:var(--accent-cyan)"></div>Notes</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- JOURNAL -->
+        <div id="journal" class="hidden">
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">Daily Journal <span class="section-badge" id="journal-count">0 entries</span></div>
+                </div>
+                <div id="journal-list"></div>
+            </div>
+        </div>
+
+        <!-- NOTES -->
+        <div id="notes" class="hidden">
+            <div class="main-grid">
+                <div>
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title">Notes <span class="section-badge" id="notes-count">0 notes</span></div>
+                        </div>
+                        <div id="notes-list"></div>
+                    </div>
+                </div>
+                <div class="sidebar">
+                    <div class="section" id="note-view-section" style="display:none">
+                        <div class="section-header"><div class="section-title">Note View</div></div>
+                        <div id="note-view"></div>
+                    </div>
+                    <div class="section" id="backlinks-section" style="display:none">
+                        <div class="section-header"><div class="section-title">Backlinks <span class="section-badge" id="bl-count">0</span></div></div>
+                        <div id="backlinks-panel"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAGS -->
+        <div id="tags" class="hidden">
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">Tags & Taxonomy</div>
+                </div>
+                <div class="tag-cloud" id="tag-cloud"></div>
+                <div style="margin-top:16px">
+                    <div class="section-title" style="margin-bottom:12px;font-size:0.88rem">Notes with tag: <span id="tag-filter-name" style="color:var(--accent-blue)">—</span></div>
+                    <div id="tag-filtered-notes"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- INBOX -->
+        <div id="inbox" class="hidden">
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">Inbox <span class="section-badge" id="inbox-count">0 items</span></div>
+                </div>
+                <div class="quick-capture">
+                    <input type="text" id="inbox-capture" placeholder="Quick capture...">
+                    <button onclick="captureToInbox()">Add</button>
+                </div>
+                <div id="inbox-list"></div>
+            </div>
+        </div>
+
+        <!-- BOOKMARKS -->
+        <div id="bookmarks" class="hidden">
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">Bookmarks & Favorites <span class="section-badge" id="bm-count">0</span></div>
+                </div>
+                <div id="bookmarks-list"></div>
+            </div>
+        </div>
+
+        <!-- RECENT EDITS -->
+        <div id="recent" class="hidden">
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">Recent Edits</div>
+                </div>
+                <div id="recent-list"></div>
+            </div>
+        </div>
+
+        <!-- VERSION HISTORY -->
+        <div id="history" class="hidden">
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">Version History</div>
+                </div>
+                <div id="history-list"></div>
+            </div>
+        </div>
+
+        <!-- TEMPLATES -->
+        <div id="templates" class="hidden">
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">Templates</div>
+                </div>
+                <div class="projects-grid" id="templates-grid"></div>
+            </div>
+        </div>
+
+        <!-- TRAINING -->
+        <div id="training" class="hidden">
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">Training Systems <span class="section-badge">12 systems</span></div>
+                </div>
+                <div class="training-metrics" id="training-metrics"></div>
+                <div class="training-tabs" id="training-tabs">
+                    <button class="training-tab active" onclick="switchTrainingView('overview')">Overview</button>
+                    <button class="training-tab" onclick="switchTrainingView('all')">All Systems</button>
+                    <button class="training-tab" onclick="switchTrainingView('pending')">Pending Items</button>
+                    <button class="training-tab" onclick="switchTrainingView('status')">By Status</button>
+                </div>
+                <div id="training-content"></div>
+            </div>
+        </div>
+
+        <!-- AGENTS -->
+        <div id="agents" class="hidden">
+            <div class="section">
+                <div class="section-header"><div class="section-title">MAHI Agent System <span class="section-badge">8 agents</span></div></div>
+                <div class="agents-grid" id="agents-grid-full"></div>
+            </div>
+        </div>
+
+        <!-- SKILLS -->
+        <div id="skills" class="hidden">
+            <div class="section">
+                <div class="section-header"><div class="section-title">OpenCode Skills <span class="section-badge">405 installed</span></div></div>
+                <div class="projects-grid" id="skills-grid"></div>
+            </div>
+        </div>
+
+        <!-- AGENT CONTROL PANEL -->
+        <div id="agents-live" class="hidden">
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">Agent Control Panel <span class="section-badge" id="agents-live-count">0 agents</span></div>
+                </div>
+                <div id="agents-live-content"></div>
+            </div>
+        </div>
+
+        <!-- AUTOPILOTS -->
+        <div id="autopilots" class="hidden">
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">Autopilot Dashboard <span class="section-badge" id="autopilots-count">0 autopilots</span></div>
+                </div>
+                <div id="autopilots-content"></div>
+            </div>
+        </div>
+
+        <!-- GOALS -->
+        <div id="goals" class="hidden">
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">Goals & LoopX <span class="section-badge" id="goals-count">0 goals</span></div>
+                </div>
+                <div id="goals-content"></div>
+            </div>
+        </div>
+
+        <!-- CROSS-PROJECT FEED -->
+        <div id="projects" class="hidden">
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">Cross-Project Feed <span class="section-badge" id="projects-count">0 updates</span></div>
+                    <div class="section-filters">
+                        <button class="filter-btn active" onclick="filterProjectFeed('all')">All</button>
+                        <button class="filter-btn" onclick="filterProjectFeed('life')">LifeWorkspace</button>
+                        <button class="filter-btn" onclick="filterProjectFeed('dsc')">Digital Services</button>
+                        <button class="filter-btn" onclick="filterProjectFeed('kdp')">KDP</button>
+                        <button class="filter-btn" onclick="filterProjectFeed('taallim')">Ta'allim</button>
+                        <button class="filter-btn" onclick="filterProjectFeed('academix')">Academix</button>
+                    </div>
+                </div>
+                <div id="projects-feed"></div>
+                <div class="section" style="margin-top:16px">
+                    <div class="section-title" style="font-size:0.9rem;margin-bottom:8px">Quick Links</div>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px" id="projects-links"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACADEMIX DSS -->
+        <div id="academix" class="hidden">
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">Academix DSS <span class="section-badge" id="academix-badge">v13.4</span></div>
+                </div>
+                <div class="stats" style="margin-bottom:16px">
+                    <div class="stat animate-in delay-1">
+                        <div class="stat-icon cyan">📦</div>
+                        <div class="stat-value cyan">35</div>
+                        <div class="stat-label">VBA Modules</div>
+                    </div>
+                    <div class="stat animate-in delay-2">
+                        <div class="stat-icon emerald">⚙️</div>
+                        <div class="stat-value emerald">274</div>
+                        <div class="stat-label">Sub/Func</div>
+                    </div>
+                    <div class="stat animate-in delay-3">
+                        <div class="stat-icon blue">📝</div>
+                        <div class="stat-value blue">34/36</div>
+                        <div class="stat-label">Thesis PASS</div>
+                    </div>
+                    <div class="stat animate-in delay-4">
+                        <div class="stat-icon amber">💰</div>
+                        <div class="stat-value amber">45k</div>
+                        <div class="stat-label">DZD Price</div>
+                    </div>
+                </div>
+                <div id="academix-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // === DATA LAYER ===
+    const projects = [
+        { name: "Ta'allim Education", desc: "AI-powered English teaching for Algerian schools", icon: "📚", color: "blue", status: "active", progress: 92 },
+        { name: "Academix DSS", desc: "VBA/Excel Decision Support System", icon: "📦", color: "cyan", status: "active", progress: 95 },
+        { name: "Freelancing", desc: "Fiverr, Upwork, LinkedIn outreach", icon: "💼", color: "amber", status: "active", progress: 35 },
+        { name: "Family Astrology", desc: "Vedic astrology integration system", icon: "⭐", color: "violet", status: "active", progress: 90 },
+        { name: "AI Agents", desc: "8 MAHI agents tested & passing", icon: "🤖", color: "emerald", status: "active", progress: 90 },
+        { name: "CCA-F Certification", desc: "Claude Certified Architect (target: Aug 31)", icon: "🎯", color: "rose", status: "active", progress: 60 },
+        { name: "KDP Publishing", desc: "Amazon KDP book publishing pipeline", icon: "📖", color: "blue", status: "active", progress: 50 },
+        { name: "Logistics Thesis", desc: "BTS CNEPD DSS — 34/36 PASS", icon: "📦", color: "cyan", status: "active", progress: 95 },
+        { name: "Research Paper", desc: "Pre-experimental quasi-equivalent design", icon: "🔬", color: "violet", status: "active", progress: 70 },
+        { name: "LifeWorkspace 3.0", desc: "Multica + LoopX integration", icon: "🚀", color: "emerald", status: "active", progress: 45 },
+    ];
+
+    const systems = [
+        {
+            name: "Ta'allim Education", icon: "📚", status: "active", completion: 92,
+            components: [
+                { name: "Exercise Generator", status: "done", detail: "72 topics, 85% PDF coverage" },
+                { name: "Grammar Engine", status: "done", detail: "60 structures (1AM-4AM)" },
+                { name: "Vocabulary Builder", status: "done", detail: "60 words, 3 themes" },
+                { name: "Test Forms", status: "done", detail: "6 student + 6 answer keys" },
+                { name: "Analysis Script", status: "done", detail: "ANCOVA/mixed ANOVA (bugfixed)" },
+                { name: "Pilot Data", status: "done", detail: "120 synthetic students" },
+                { name: "Scoring Rubrics", status: "done", detail: "Error correction + sentence building" },
+                { name: "Teacher Review", status: "pending", detail: "2 teachers needed for difficulty equivalence" },
+            ]
+        },
+        {
+            name: "Knowledge Base", icon: "📖", status: "active", completion: 95,
+            components: [
+                { name: "PDF Extraction", status: "done", detail: "422 of 786 PDFs (54%)" },
+                { name: "Image Analysis", status: "done", detail: "3,169 images analyzed" },
+                { name: "Knowledge Graph", status: "done", detail: "565 entities, 3,415 connections" },
+                { name: "Wiki-links", status: "done", detail: "0 broken (108 fixed)" },
+                { name: "LifeGoal Bridge", status: "done", detail: "422 docs connected" },
+            ]
+        },
+        {
+            name: "Family Astrology", icon: "⭐", status: "active", completion: 90,
+            components: [
+                { name: "Astrology Engine", status: "done", detail: "skyfield ephemeris" },
+                { name: "Family Charts", status: "done", detail: "8 members calculated" },
+                { name: "Dasha System", status: "done", detail: "Vimshottari timing" },
+                { name: "Synastry", status: "done", detail: "6 Rahu-Ketu axes" },
+                { name: "Research Copilot", status: "done", detail: "19 shared nakshatras" },
+            ]
+        },
+        {
+            name: "AI Agent", icon: "🤖", status: "active", completion: 90,
+            components: [
+                { name: "MAHI System", status: "done", detail: "10 agents built" },
+                { name: "Agent Testing", status: "done", detail: "8 agents tested, all PASS" },
+                { name: "405 Skills", status: "done", detail: "82 original + 342 ECC" },
+                { name: "Orchestrator", status: "done", detail: "LoopX Goal-001 completed" },
+            ]
+        },
+        {
+            name: "Freelancing", icon: "💼", status: "active", completion: 35,
+            components: [
+                { name: "Fiverr", status: "done", detail: "Account created, 3 gigs" },
+                { name: "Upwork", status: "done", detail: "Profile + portfolio" },
+                { name: "LinkedIn", status: "done", detail: "Account created" },
+                { name: "Portfolio Site", status: "done", detail: "kamelmahi.netlify.app" },
+                { name: "First Income", status: "pending", detail: "No orders yet — Day 4 of 30-day plan" },
+            ]
+        },
+        {
+            name: "Feasibility", icon: "📊", status: "active", completion: 80,
+            components: [
+                { name: "Generator", status: "done", detail: "6 business types" },
+                { name: "Sample Study", status: "done", detail: "320 lines generated" },
+                { name: "Pricing Model", status: "done", detail: "15k DZD launch" },
+                { name: "Marketing Plan", status: "done", detail: "240k DZD/year budget" },
+            ]
+        },
+        {
+            name: "Research Paper", icon: "📝", status: "active", completion: 70,
+            components: [
+                { name: "§1 Introduction", status: "done", detail: "Complete" },
+                { name: "§2 Literature", status: "done", detail: "Complete" },
+                { name: "§3 Methodology", status: "done", detail: "EN+FR versions" },
+                { name: "§4 Results", status: "done", detail: "Auto-generated, 17 CSV tables" },
+                { name: "§5 Discussion", status: "done", detail: "Auto-generated, ~3,200 words" },
+                { name: "§6 Conclusion", status: "done", detail: "Template ready" },
+                { name: "Teacher Survey", status: "pending", detail: "Needs real pilot data" },
+            ]
+        },
+        {
+            name: "Thirduni AI", icon: "🎓", status: "waiting", completion: 50,
+            components: [
+                { name: "Application", status: "done", detail: "Submitted" },
+                { name: "Response", status: "pending", detail: "Waiting (Sep 1-30, 2026)" },
+            ]
+        },
+        {
+            name: "Humphrey Fellowship", icon: "🌍", status: "planning", completion: 30,
+            components: [
+                { name: "Target Set", status: "done", detail: "2028-2029" },
+                { name: "Requirement", status: "done", detail: "TOEFL iBT min 72" },
+                { name: "Prep Plan", status: "done", detail: "Free resources mapped" },
+                { name: "TOEFL Prep", status: "pending", detail: "Not started" },
+            ]
+        },
+        {
+            name: "Academix DSS", icon: "📦", status: "active", completion: 95,
+            components: [
+                { name: "VBA Modules", status: "done", detail: "35 modules, 274 Sub/Func" },
+                { name: "UI Forms", status: "done", detail: "8 UserForms" },
+                { name: "CMUP Algorithm", status: "done", detail: "Chronological fixed" },
+                { name: "Invoice Numbering", status: "done", detail: "12 digits fixed" },
+                { name: "Audit Trail", status: "done", detail: "UserInterfaceOnly" },
+            ]
+        },
+        {
+            name: "CCA-F Certification", icon: "🎯", status: "active", completion: 60,
+            components: [
+                { name: "Domain 1-5 Study Guides", status: "done", detail: "All 5 domains complete" },
+                { name: "Practice Quizzes", status: "done", detail: "5 quizzes (50 questions)" },
+                { name: "Full Practice Exam", status: "done", detail: "60 questions" },
+                { name: "Hands-on Labs", status: "done", detail: "3 labs complete" },
+                { name: "Schedule Exam", status: "pending", detail: "No funds/diploma yet" },
+            ]
+        },
+        {
+            name: "KDP Publishing", icon: "📖", status: "active", completion: 50,
+            components: [
+                { name: "First Book", status: "done", detail: "Published on Amazon" },
+                { name: "Account Setup", status: "done", detail: "Financials, niches mapped" },
+                { name: "Second Book", status: "pending", detail: "Not started" },
+            ]
+        },
+        {
+            name: "Cross-Project Coordination", icon: "🔗", status: "active", completion: 70,
+            components: [
+                { name: "UPDATES.md", status: "done", detail: "5 projects tracked" },
+                { name: "AGENTS.md", status: "done", detail: "5 projects configured" },
+                { name: "Gadget Feed", status: "done", detail: "Cross-Project Feed widget" },
+                { name: "Live Feeds", status: "pending", detail: "Real-time UPDATES.md parsing" },
+            ]
+        },
+    ];
+
+    const agents = [
+        { name: "code", model: "gpt-oss-20b", status: "online" },
+        { name: "write", model: "qwen3-32b", status: "online" },
+        { name: "arabic", model: "allam-2-7b", status: "online" },
+        { name: "research", model: "deepseek-v4", status: "online" },
+        { name: "dss", model: "gpt-oss-20b", status: "idle" },
+        { name: "teaching", model: "qwen3-32b", status: "online" },
+        { name: "career", model: "llama-3.3-70b", status: "online" },
+        { name: "spiritual", model: "allam-2-7b", status: "idle" },
+    ];
+
+    const memory = [
+        { name: "Profile", icon: "👤", desc: "Who MAHI is", color: "blue" },
+        { name: "Preferences", icon: "⚙️", desc: "Agent behavior rules", color: "cyan" },
+        { name: "Areas", icon: "📊", desc: "10 active project areas", color: "emerald" },
+        { name: "Topics", icon: "🧠", desc: "13 domain knowledge files", color: "violet" },
+        { name: "People", icon: "👥", desc: "Key contacts", color: "amber" },
+        { name: "Sessions", icon: "📅", desc: "Session history", color: "rose" },
+    ];
+
+    const activities = [
+        { icon: "code", emoji: "🔧", text: "Gadget v2 upgraded with 10 PKMS features", time: "Just now" },
+        { icon: "write", emoji: "📝", text: "PKMS gap analysis completed", time: "5 min ago" },
+        { icon: "code", emoji: "🔧", text: "§4/§5 draft auto-generated for Ta'allim paper", time: "1 hour ago" },
+        { icon: "write", emoji: "📝", text: "Test forms split: 6 student forms + 6 answer keys", time: "2 hours ago" },
+        { icon: "code", emoji: "🔧", text: "LoopX Goal-001 completed — 8 agents PASS", time: "5 hours ago" },
+        { icon: "code", emoji: "🔧", text: "405 OpenCode skills installed (ECC + claude-skills)", time: "6 hours ago" },
+        { icon: "code", emoji: "🔧", text: "Project cleanup: 64→17 dirs, 9 deleted, 5 repos merged", time: "1 day ago" },
+        { icon: "code", emoji: "🔧", text: "mahi-spiritual + kdp repos pushed to GitHub", time: "1 day ago" },
+    ];
+
+    const skillCategories = [
+        { name: "Engineering (82)", icon: "🔧", desc: "Python, React, Node, Go, Rust, Docker, K8s...", color: "blue" },
+        { name: "Research (45)", icon: "🔬", desc: "deep-research, litreview, grants, patent...", color: "violet" },
+        { name: "Marketing (44)", icon: "📣", desc: "SEO, CRO, ads, content, social, analytics...", color: "emerald" },
+        { name: "Product (30)", icon: "📦", desc: "product-strategy, analytics, experiments...", color: "cyan" },
+        { name: "Security (25)", icon: "🔒", desc: "OWASP, pen-testing, compliance, SOC2...", color: "rose" },
+        { name: "DevOps (20)", icon: "🚀", desc: "CI/CD, Terraform, Kubernetes, AWS...", color: "amber" },
+        { name: "Business (22)", icon: "💼", desc: "CFO, CMO, CRO, CEO advisors, contracts...", color: "blue" },
+        { name: "Writing (15)", icon: "✍️", desc: "article, copywriting, email, social...", color: "violet" },
+        { name: "Quality (18)", icon: "✅", desc: "code-reviewer, testing, TDD, verification...", color: "emerald" },
+        { name: "Data (12)", icon: "📊", desc: "senior-data-scientist, analytics, SQL...", color: "cyan" },
+        { name: "AI/ML (10)", icon: "🤖", desc: "RAG, agent-designer, prompt-optimizer...", color: "rose" },
+        { name: "Domain (22)", icon: "🎯", desc: "healthcare, legal, energy, logistics...", color: "amber" },
+    ];
+
+    // === NOTES WITH LINKS, TAGS, BOOKMARKS ===
+    const notes = [
+        { id: "brain-map", title: "Brain Map", tags: ["navigation","master"], links: ["memory-index","master-integration","session-state"], bookmarked: true, content: "Master navigation file. Start here. Links to [[memory-index]] and [[master-integration]].", modified: "2026-08-02T12:00" },
+        { id: "memory-index", title: "Memory Index", tags: ["memory","navigation"], links: ["brain-map","profile","preferences"], bookmarked: false, content: "20-question search index for [[brain-map]]. Links to [[profile]] and [[preferences]].", modified: "2026-08-02T11:00" },
+        { id: "profile", title: "Profile — MAHI", tags: ["identity","personal"], links: ["brain-map","preferences"], bookmarked: true, content: "MAHI Kamel Abdelghani. 30 years old, El Bayadh, Algeria. BA English, BTS Logistics. Links to [[brain-map]].", modified: "2026-08-01T10:00" },
+        { id: "preferences", title: "Preferences", tags: ["config","agent"], links: ["brain-map","profile"], bookmarked: false, content: "Agent behavior rules. snake_case Python, camelCase JS. Links to [[brain-map]].", modified: "2026-08-01T09:00" },
+        { id: "session-state", title: "Session State", tags: ["system","config"], links: ["brain-map","master-integration"], bookmarked: false, content: "Persistent session state. 3 files for 95% faster loading. Links to [[brain-map]].", modified: "2026-08-02T12:00" },
+        { id: "master-integration", title: "Master Integration", tags: ["system","navigation"], links: ["brain-map","session-state"], bookmarked: false, content: "Everything connected. Links to [[brain-map]] and [[session-state]].", modified: "2026-07-31T10:00" },
+        { id: "cca-f-cert", title: "CCA-F Certification", tags: ["certification","career","study"], links: ["brain-map","career-roadmap"], bookmarked: true, content: "Claude Certified Architect. Target Aug 31. 5 domains, practice exams complete. Links to [[brain-map]].", modified: "2026-08-02T08:00" },
+        { id: "career-roadmap", title: "Career Roadmap", tags: ["career","planning"], links: ["brain-map","cca-f-cert","freelancing"], bookmarked: false, content: "Short/mid/long term goals. AI Architect role, $1000+/month freelancing. Links to [[cca-f-cert]].", modified: "2026-07-30T10:00" },
+        { id: "freelancing", title: "Freelancing", tags: ["career","income","freelancing"], links: ["brain-map","career-roadmap"], bookmarked: false, content: "Day 4, no income yet. Fiverr, Upwork, LinkedIn. Links to [[career-roadmap]].", modified: "2026-08-01T14:00" },
+        { id: "taallim-moc", title: "Ta'allim MOC", tags: ["education","teaching","english"], links: ["brain-map","grammar-engine","exercise-generator"], bookmarked: true, content: "72 topics, 85% PDF coverage. AI-powered English teaching. Links to [[grammar-engine]].", modified: "2026-08-02T10:00" },
+        { id: "grammar-engine", title: "Grammar Engine", tags: ["education","grammar","code"], links: ["taallim-moc","exercise-generator"], bookmarked: false, content: "34 topics, 4 levels. Python implementation. Links to [[taallim-moc]].", modified: "2026-08-01T16:00" },
+        { id: "exercise-generator", title: "Exercise Generator", tags: ["education","exercises"], links: ["taallim-moc","grammar-engine"], bookmarked: false, content: "Fill-in-blank, MCQ, sentence building, error correction. Links to [[taallim-moc]].", modified: "2026-08-01T17:00" },
+        { id: "astrology-integration", title: "Astrology Integration", tags: ["spiritual","astrology","vedic"], links: ["brain-map","daily-journal"], bookmarked: true, content: "Gemini Ascendant, Scorpio Moon. Vedic system. Links to [[brain-map]].", modified: "2026-07-28T10:00" },
+        { id: "academix-dss", title: "Academix DSS", tags: ["project","vba","thesis"], links: ["brain-map","logistics-thesis"], bookmarked: false, content: "VBA/Excel DSS for inventory management. 34/36 PASS. Links to [[brain-map]].", modified: "2026-07-25T10:00" },
+        { id: "logistics-thesis", title: "Logistics Thesis", tags: ["thesis","bts","academic"], links: ["brain-map","academix-dss"], bookmarked: false, content: "BTS CNEPD. 4 chapters, 17 sections. Links to [[academix-dss]].", modified: "2026-07-24T10:00" },
+        { id: "kdp-publishing", title: "KDP Publishing", tags: ["publishing","books","income"], links: ["brain-map"], bookmarked: false, content: "Amazon KDP pipeline. First book published. Links to [[brain-map]].", modified: "2026-07-29T10:00" },
+        { id: "life-workspace-3", title: "LifeWorkspace 3.0", tags: ["system","multica","loopx"], links: ["brain-map","session-state"], bookmarked: false, content: "Multica + LoopX integration. 10 agents, 5 squads, 3 autopilots. Links to [[brain-map]].", modified: "2026-08-02T11:30" },
+        { id: "research-paper", title: "Research Paper", tags: ["research","academic","taallim"], links: ["brain-map","taallim-moc"], bookmarked: false, content: "Pre-experimental quasi-equivalent design. §4/§5 draft auto-generated. Links to [[taallim-moc]].", modified: "2026-08-02T09:00" },
+        { id: "knowledge-base", title: "Knowledge Base", tags: ["system","pdfs","reference"], links: ["brain-map"], bookmarked: false, content: "422 PDFs, 13 summary MDs. Links to [[brain-map]].", modified: "2026-07-20T10:00" },
+    ];
+
+    // === JOURNAL ENTRIES ===
+    const journal = [
+        { date: "2026-08-02", title: "PKMS Upgrade Day", body: "Completed full browser walkthrough of Gadget v2. Identified 10 missing PKMS features. Research completed on Obsidian, Logseq, Roam. Building all features today.", tags: ["gadget","pkms","research"] },
+        { date: "2026-08-01", title: "Ta'allim Paper Progress", body: "§4/§5 draft auto-generated. 17 CSV tables produced. Test forms split into student + answer key versions. Scoring rubrics created.", tags: ["taallim","research","writing"] },
+        { date: "2026-07-31", title: "Project Cleanup Complete", body: "64→17 directories. 9 deleted, 5 repos merged→3, 15 consolidated. Git commits: logistics, kdp, mahi-spiritual, taallim.", tags: ["cleanup","git","organization"] },
+        { date: "2026-07-30", title: "LoopX Goal-001 Complete", body: "All 8 MAHI agents tested and PASS via orchestrator engine. LoopX CLI v0.4.1 fixed. 405 OpenCode skills installed.", tags: ["loopx","agents","testing"] },
+        { date: "2026-07-29", title: "Skills Installation", body: "82→405 skills. 342 from ECC/claude-skills repo. 12 categories: Engineering, Research, Marketing, Product, Security, DevOps, Business, Writing, Quality, Data, AI/ML, Domain.", tags: ["skills","opencode","installation"] },
+    ];
+
+    // === TEMPLATES ===
+    const templates = [
+        { name: "Daily Note", icon: "📅", desc: "Journal entry with date, tasks, reflections", fields: ["date","tasks","wins","challenges","tomorrow"] },
+        { name: "Meeting Notes", icon: "📋", desc: "Attendees, agenda, decisions, action items", fields: ["attendees","agenda","decisions","actions"] },
+        { name: "Project Brief", icon: "🎯", desc: "Goal, scope, timeline, resources, risks", fields: ["goal","scope","timeline","resources","risks"] },
+        { name: "Research Note", icon: "🔬", desc: "Source, key findings, implications, links", fields: ["source","findings","implications","links"] },
+        { name: "Book Note", icon: "📖", desc: "Title, author, key ideas, quotes, takeaways", fields: ["title","author","ideas","quotes","takeaways"] },
+        { name: "Weekly Review", icon: "📊", desc: "Wins, lessons, next week priorities", fields: ["wins","lessons","priorities"] },
+        { name: "Flashcard", icon: "🃏", desc: "Question on front, answer on back", fields: ["question","answer","tags"] },
+        { name: "Person Profile", icon: "👤", desc: "Name, role, relationship, notes", fields: ["name","role","relationship","notes"] },
+    ];
+
+    // === INBOX ===
+    let inbox = [
+        { text: "Research Heptabase for graph visualization patterns", time: "2 hours ago", done: false },
+        { text: "Follow up with Allal school + Directorate on Aug 7", time: "1 day ago", done: false },
+        { text: "Buy Upwork connects ($1.50/10)", time: "1 day ago", done: false },
+        { text: "Send 5 Upwork proposals daily", time: "1 day ago", done: false },
+        { text: "Find first DSS customer — call Seddiki Ahmed", time: "2 days ago", done: false },
+    ];
+
+    // === AGENTS WITH SQUADS ===
+    const agentsLive = [
+        { id: "code", name: "Code Agent", model: "groq/gpt-oss-20b", status: "online", squad: "CodeTeam", skills: ["python-patterns", "vba-patterns", "code-quality"], lastRun: "2026-08-02 11:30", tasksRun: 47 },
+        { id: "dss", name: "DSS Agent", model: "groq/gpt-oss-20b", status: "idle", squad: "CodeTeam", skills: ["vba-patterns", "academix-dss"], lastRun: "2026-08-01 09:00", tasksRun: 12 },
+        { id: "write", name: "Write Agent", model: "groq/qwen3-32b", status: "online", squad: "ContentTeam", skills: ["article-writing", "stop-slop", "brand-voice"], lastRun: "2026-08-02 10:00", tasksRun: 35 },
+        { id: "arabic", name: "Arabic Agent", model: "groq/allam-2-7b", status: "online", squad: "ContentTeam", skills: ["arabic", "localization"], lastRun: "2026-08-01 14:00", tasksRun: 18 },
+        { id: "research", name: "Research Agent", model: "deepseek-v4-flash", status: "online", squad: "ResearchTeam", skills: ["deep-research", "literature-review", "research-ops"], lastRun: "2026-08-02 09:00", tasksRun: 28 },
+        { id: "spiritual", name: "Spiritual Agent", model: "groq/allam-2-7b", status: "idle", squad: "ResearchTeam", skills: ["astrology-calculations", "spiritual-practice"], lastRun: "2026-07-30 06:00", tasksRun: 8 },
+        { id: "teaching", name: "Teaching Agent", model: "groq/qwen3-32b", status: "online", squad: "EducationTeam", skills: ["education-methodology", "exercise-generation"], lastRun: "2026-08-02 08:00", tasksRun: 22 },
+        { id: "career", name: "Career Agent", model: "groq/llama-3.3-70b", status: "online", squad: "CareerTeam", skills: ["freelancing-strategy", "career-planning"], lastRun: "2026-08-01 11:00", tasksRun: 15 },
+        { id: "quick", name: "Quick Agent", model: "groq/llama-3.1-8b", status: "online", squad: null, skills: ["fast-response"], lastRun: "2026-08-02 12:00", tasksRun: 156 },
+        { id: "oss", name: "OSS Agent", model: "groq/gpt-oss-120b", status: "idle", squad: null, skills: ["complex-reasoning"], lastRun: "2026-07-29 16:00", tasksRun: 5 },
+    ];
+
+    const squads = [
+        { name: "CodeTeam", leader: "code", members: ["code", "dss"], color: "blue" },
+        { name: "ContentTeam", leader: "write", members: ["write", "arabic"], color: "violet" },
+        { name: "ResearchTeam", leader: "research", members: ["research", "spiritual"], color: "cyan" },
+        { name: "EducationTeam", leader: "teaching", members: ["teaching"], color: "emerald" },
+        { name: "CareerTeam", leader: "career", members: ["career"], color: "amber" },
+    ];
+
+    // === AUTOPILOTS ===
+    const autopilots = [
+        {
+            name: "DailyMemorySync",
+            schedule: "0 22 * * *",
+            scheduleHuman: "Every day at 22:00",
+            description: "Sync memory files at end of day. Updates .session-state.json with today's decisions and pending tasks.",
+            task: "Update .session-state.json with today's decisions and pending tasks",
+            enabled: true,
+            lastRun: "2026-08-01 22:00",
+            nextRun: "2026-08-02 22:00",
+            status: "active",
+            runsTotal: 45,
+            runsSuccess: 43
+        },
+        {
+            name: "WeeklyReview",
+            schedule: "0 10 * * 0",
+            scheduleHuman: "Every Sunday at 10:00",
+            description: "Weekly system review. Review all training systems, update MOCs, check for broken links.",
+            task: "Review all training systems, update MOCs, check for broken links",
+            enabled: true,
+            lastRun: "2026-07-27 10:00",
+            nextRun: "2026-08-03 10:00",
+            status: "active",
+            runsTotal: 8,
+            runsSuccess: 8
+        },
+        {
+            name: "TrainingStatusCheck",
+            schedule: "0 9 * * 1",
+            scheduleHuman: "Every Monday at 09:00",
+            description: "Weekly training status update. Check all 12 training systems, update dashboard, report pending items.",
+            task: "Check all 12 training systems, update dashboard, report pending items",
+            enabled: true,
+            lastRun: "2026-07-28 09:00",
+            nextRun: "2026-08-04 09:00",
+            status: "active",
+            runsTotal: 7,
+            runsSuccess: 7
+        },
+    ];
+
+    // === GOALS ===
+    const goals = [
+        {
+            id: "goal-1",
+            title: "CCA-F Certification",
+            description: "Pass Claude Certified Architect exam. Complete all 5 domains, practice exams, and hands-on labs.",
+            status: "active",
+            progress: 60,
+            deadline: "2026-08-31",
+            agents: ["research", "code"],
+            tasks: [
+                { text: "Complete Domain 1-5 study guides", done: true },
+                { text: "Complete all 5 practice quizzes", done: true },
+                { text: "Complete full practice exam (60 questions)", done: true },
+                { text: "Complete 3 hands-on labs", done: true },
+                { text: "Schedule and take the exam", done: false },
+            ]
+        },
+        {
+            id: "goal-2",
+            title: "Ta'allim Pilot Study",
+            description: "Complete pre-experimental research with 120 students. Collect pilot data, run analysis, finalize §4/§5.",
+            status: "active",
+            progress: 70,
+            deadline: "2026-09-15",
+            agents: ["teaching", "research"],
+            tasks: [
+                { text: "Generate test forms (6 student + 6 answer keys)", done: true },
+                { text: "Create scoring rubrics for IRR", done: true },
+                { text: "Auto-generate §4/§5 draft", done: true },
+                { text: "Collect pilot data from 2 teachers", done: false },
+                { text: "Run final statistical analysis", done: false },
+                { text: "Finalize thesis chapters", done: false },
+            ]
+        },
+        {
+            id: "goal-3",
+            title: "Freelancing First Income",
+            description: "Land first paying client on Fiverr/Upwork. Complete 30-day action plan, get first order.",
+            status: "active",
+            progress: 35,
+            deadline: "2026-08-31",
+            agents: ["career"],
+            tasks: [
+                { text: "Create Upwork + Fiverr accounts", done: true },
+                { text: "Optimize LinkedIn profile", done: true },
+                { text: "Apply to Wordvice + Scribendi", done: false },
+                { text: "Create 3 portfolio samples", done: false },
+                { text: "Send 5 Upwork proposals daily", done: false },
+                { text: "Land first paying order", done: false },
+            ]
+        },
+        {
+            id: "goal-4",
+            title: "LifeWorkspace 3.0",
+            description: "Integrate Multica agents + LoopX goals into unified dashboard. Make Gadget a live control panel.",
+            status: "active",
+            progress: 50,
+            deadline: "2026-08-15",
+            agents: ["code", "quick"],
+            tasks: [
+                { text: "Install Multica CLI", done: true },
+                { text: "Create 10 agent definitions + 5 squads", done: true },
+                { text: "Fix LoopX CLI", done: true },
+                { text: "Test all 8 MAHI agents", done: true },
+                { text: "Add Agent Control tab to Gadget", done: false },
+                { text: "Add Autopilots tab to Gadget", done: false },
+                { text: "Add Goals tab to Gadget", done: false },
+            ]
+        },
+        {
+            id: "goal-5",
+            title: "Logistics Thesis Defense",
+            description: "Defend BTS CNEPD thesis. DSS achieved 34/36 PASS. Prepare defense materials.",
+            status: "active",
+            progress: 95,
+            deadline: "2026-08-20",
+            agents: ["code"],
+            tasks: [
+                { text: "Complete DSS development (34/36 PASS)", done: true },
+                { text: "Write thesis chapters 1-4", done: true },
+                { text: "Format thesis to CNEPD standards", done: true },
+                { text: "Prepare defense presentation", done: false },
+                { text: "Defend thesis", done: false },
+            ]
+        },
+    ];
+
+    // === VERSION HISTORY ===
+    const versionHistory = [
+        { time: "2026-08-02 12:00", note: "Gadget v2", changes: "+10 PKMS features (graph, journal, notes, tags, inbox, bookmarks, templates, history, recent, wikilinks)" },
+        { time: "2026-08-02 10:00", note: "Gadget v2", changes: "Updated data: 405 skills, 10 projects, 12 systems, 8 agents" },
+        { time: "2026-08-02 09:00", note: "Research Paper", changes: "Auto-generated §4/§5 draft, 17 CSV tables" },
+        { time: "2026-08-01 17:00", note: "Ta'allim", changes: "Test forms split: 6 student + 6 answer keys" },
+        { time: "2026-08-01 16:00", note: "Ta'allim", changes: "Scoring rubrics created for IRR" },
+        { time: "2026-07-31 10:00", note: "System", changes: "Project cleanup: 64→17 dirs, 9 deleted, 5 repos merged" },
+        { time: "2026-07-30 10:00", note: "LoopX", changes: "Goal-001 completed — 8 agents PASS" },
+        { time: "2026-07-29 10:00", note: "Skills", changes: "405 OpenCode skills installed (82 original + 342 ECC)" },
+    ];
+
+    // === ALL TAGS ===
+    function getAllTags() {
+        const tagMap = {};
+        notes.forEach(n => n.tags.forEach(t => { tagMap[t] = (tagMap[t] || 0) + 1; }));
+        journal.forEach(j => j.tags.forEach(t => { tagMap[t] = (tagMap[t] || 0) + 1; }));
+        return Object.entries(tagMap).sort((a,b) => b[1] - a[1]);
+    }
+
+    // === RENDER FUNCTIONS ===
+    function renderProjects() {
+        document.getElementById('projects-grid').innerHTML = projects.map(p => `
+            <div class="project-card ${p.color}" onclick="openNote('${p.name.toLowerCase().replace(/[^a-z]/g,'-')}')">
+                <div class="project-top">
+                    <div class="project-icon ${p.color}">${p.icon}</div>
+                    <span class="project-status ${p.status}">${p.status}</span>
+                </div>
+                <div class="project-name">${p.name}</div>
+                <div class="project-desc">${p.desc}</div>
+                <div class="project-progress">
+                    <div class="progress-bar"><div class="progress-fill ${p.color}" style="width:${p.progress}%"></div></div>
+                    <span class="progress-pct">${p.progress}%</span>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // === TRAINING DASHBOARD ===
+    let currentTrainingView = 'overview';
+
+    function renderTrainingMetrics() {
+        const totalComp = systems.reduce((s, sys) => s + sys.components.length, 0);
+        const doneComp = systems.reduce((s, sys) => s + sys.components.filter(c => c.status === 'done').length, 0);
+        const pendingComp = totalComp - doneComp;
+        const avgComp = Math.round(systems.reduce((s, sys) => s + sys.completion, 0) / systems.length);
+
+        document.getElementById('training-metrics').innerHTML = `
+            <div class="training-metric"><div class="metric-value">12</div><div class="metric-label">Systems</div></div>
+            <div class="training-metric"><div class="metric-value">${doneComp}/${totalComp}</div><div class="metric-label">Components Done</div></div>
+            <div class="training-metric"><div class="metric-value">${pendingComp}</div><div class="metric-label">Pending</div></div>
+            <div class="training-metric"><div class="metric-value">${avgComp}%</div><div class="metric-label">Avg Completion</div></div>
+        `;
+    }
+
+    function switchTrainingView(view) {
+        currentTrainingView = view;
+        document.querySelectorAll('.training-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.training-tab').forEach(t => {
+            if ((view === 'overview' && t.textContent === 'Overview') ||
+                (view === 'all' && t.textContent === 'All Systems') ||
+                (view === 'pending' && t.textContent === 'Pending Items') ||
+                (view === 'status' && t.textContent === 'By Status')) {
+                t.classList.add('active');
+            }
+        });
+        renderTrainingContent();
+    }
+
+    function renderTrainingContent() {
+        const el = document.getElementById('training-content');
+        if (currentTrainingView === 'overview') renderTrainingOverview(el);
+        else if (currentTrainingView === 'all') renderTrainingAll(el);
+        else if (currentTrainingView === 'pending') renderTrainingPending(el);
+        else if (currentTrainingView === 'status') renderTrainingByStatus(el);
+    }
+
+    function renderTrainingOverview(el) {
+        el.innerHTML = systems.map(s => {
+            const done = s.components.filter(c => c.status === 'done').length;
+            const total = s.components.length;
+            const statusClass = s.status === 'active' ? 'emerald' : s.status === 'waiting' ? 'blue' : 'amber';
+            return `
+                <div class="training-expand-card" onclick="this.classList.toggle('open')">
+                    <div class="training-expand-header">
+                        <div class="training-expand-left">
+                            <span class="training-expand-icon">${s.icon}</span>
+                            <span class="training-expand-name">${s.name}</span>
+                            <span class="status-badge ${s.status}">${s.status}</span>
+                        </div>
+                        <div class="training-expand-right">
+                            <span style="font-size:0.72rem;color:var(--text-muted)">${done}/${total}</span>
+                            <span class="training-expand-pct">${s.completion}%</span>
+                            <span class="training-expand-chevron">&#9660;</span>
+                        </div>
+                    </div>
+                    <div class="training-expand-body">
+                        <div class="training-progress-mini"><div class="training-progress-mini-fill progress-fill ${statusClass}" style="width:${s.completion}%"></div></div>
+                        ${s.components.map(c => `
+                            <div class="training-component">
+                                <span class="training-comp-icon">${c.status === 'done' ? '&#10003;' : '&#9203;'}</span>
+                                <span class="training-comp-name">${c.name}</span>
+                                <span class="training-comp-detail">${c.detail}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function renderTrainingAll(el) {
+        el.innerHTML = systems.map(s => {
+            const done = s.components.filter(c => c.status === 'done').length;
+            const total = s.components.length;
+            const statusClass = s.status === 'active' ? 'emerald' : s.status === 'waiting' ? 'blue' : 'amber';
+            return `
+                <div class="training-expand-card open" onclick="this.classList.toggle('open')">
+                    <div class="training-expand-header">
+                        <div class="training-expand-left">
+                            <span class="training-expand-icon">${s.icon}</span>
+                            <span class="training-expand-name">${s.name}</span>
+                            <span class="status-badge ${s.status}">${s.status}</span>
+                        </div>
+                        <div class="training-expand-right">
+                            <span style="font-size:0.72rem;color:var(--text-muted)">${done}/${total}</span>
+                            <span class="training-expand-pct">${s.completion}%</span>
+                            <span class="training-expand-chevron">&#9660;</span>
+                        </div>
+                    </div>
+                    <div class="training-expand-body">
+                        <div class="training-progress-mini"><div class="training-progress-mini-fill progress-fill ${statusClass}" style="width:${s.completion}%"></div></div>
+                        ${s.components.map(c => `
+                            <div class="training-component">
+                                <span class="training-comp-icon">${c.status === 'done' ? '&#10003;' : '&#9203;'}</span>
+                                <span class="training-comp-name">${c.name}</span>
+                                <span class="training-comp-detail">${c.detail}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function renderTrainingPending(el) {
+        let html = '';
+        systems.forEach(s => {
+            const pending = s.components.filter(c => c.status !== 'done');
+            if (pending.length) {
+                html += `<div style="margin-bottom:16px">
+                    <div style="font-weight:600;font-size:0.85rem;margin-bottom:8px">${s.icon} ${s.name} <span class="status-badge ${s.status}">${s.status}</span></div>
+                    ${pending.map(c => `
+                        <div class="training-pending-item">
+                            <span style="font-size:0.85rem">${c.status === 'pending' ? '&#9203;' : '&#128308;'}</span>
+                            <span class="training-pending-name">${c.name}</span>
+                            <span class="training-pending-detail">${c.detail}</span>
+                        </div>
+                    `).join('')}
+                </div>`;
+            }
+        });
+        el.innerHTML = html || '<div style="text-align:center;padding:40px;color:var(--text-muted)">No pending items</div>';
+    }
+
+    function renderTrainingByStatus(el) {
+        const groups = { active: [], waiting: [], planning: [], partial: [] };
+        systems.forEach(s => {
+            const key = s.status;
+            if (groups[key]) groups[key].push(s);
+        });
+        const labels = { active: '&#9989; Active', waiting: '&#128308; Waiting', planning: '&#9898; Planning', partial: '&#128992; Partial' };
+        let html = '';
+        for (const [status, systemsInGroup] of Object.entries(groups)) {
+            if (systemsInGroup.length) {
+                html += `<div class="training-status-group">
+                    <div class="training-status-title">${labels[status]} (${systemsInGroup.length})</div>
+                    ${systemsInGroup.map(s => {
+                        const done = s.components.filter(c => c.status === 'done').length;
+                        const total = s.components.length;
+                        const statusClass = s.status === 'active' ? 'emerald' : s.status === 'waiting' ? 'blue' : 'amber';
+                        return `
+                            <div class="training-expand-card" onclick="this.classList.toggle('open')" style="margin-bottom:6px">
+                                <div class="training-expand-header">
+                                    <div class="training-expand-left">
+                                        <span class="training-expand-icon">${s.icon}</span>
+                                        <span class="training-expand-name">${s.name}</span>
+                                    </div>
+                                    <div class="training-expand-right">
+                                        <span style="font-size:0.72rem;color:var(--text-muted)">${done}/${total}</span>
+                                        <span class="training-expand-pct">${s.completion}%</span>
+                                        <span class="training-expand-chevron">&#9660;</span>
+                                    </div>
+                                </div>
+                                <div class="training-expand-body">
+                                    <div class="training-progress-mini"><div class="training-progress-mini-fill progress-fill ${statusClass}" style="width:${s.completion}%"></div></div>
+                                    ${s.components.map(c => `
+                                        <div class="training-component">
+                                            <span class="training-comp-icon">${c.status === 'done' ? '&#10003;' : '&#9203;'}</span>
+                                            <span class="training-comp-name">${c.name}</span>
+                                            <span class="training-comp-detail">${c.detail}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>`;
+            }
+        }
+        el.innerHTML = html;
+    }
+
+    function renderTraining() {
+        renderTrainingMetrics();
+        renderTrainingContent();
+    }
+
+    function renderMemory() {
+        document.getElementById('agents-grid-full') && (document.getElementById('agents-grid-full').innerHTML = agents.map(a => `
+            <div class="project-card ${a.status==='online'?'emerald':'amber'}">
+                <div class="project-top">
+                    <div class="project-icon ${a.status==='online'?'emerald':'amber'}">🤖</div>
+                    <span class="project-status ${a.status==='online'?'active':'planning'}">${a.status}</span>
+                </div>
+                <div class="project-name">${a.name}</div>
+                <div class="project-desc" style="font-family:'JetBrains Mono',monospace;font-size:0.72rem">${a.model}</div>
+            </div>
+        `).join(''));
+    }
+
+    function renderActivity() {
+        document.getElementById('activity-list').innerHTML = activities.map(a => `
+            <div class="activity-item">
+                <div class="activity-icon ${a.icon}">${a.emoji}</div>
+                <div>
+                    <div class="activity-text">${a.text}</div>
+                    <div class="activity-time">${a.time}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function renderSkills() {
+        document.getElementById('skills-grid').innerHTML = skillCategories.map(s => `
+            <div class="project-card ${s.color}">
+                <div class="project-top"><div class="project-icon ${s.color}">${s.icon}</div></div>
+                <div class="project-name">${s.name}</div>
+                <div class="project-desc">${s.desc}</div>
+            </div>
+        `).join('');
+    }
+
+    // === GRAPH VIEW (Canvas-based) ===
+    let graphNodes = [], graphEdges = [], graphAnim = null;
+
+    function buildGraph() {
+        graphNodes = [];
+        graphEdges = [];
+        const nodeMap = {};
+
+        // Add all notes as nodes
+        notes.forEach((n, i) => {
+            const node = { id: n.id, label: n.title, type: 'note', x: Math.random()*800+50, y: Math.random()*400+50, vx: 0, vy: 0, color: 'var(--accent-cyan)' };
+            graphNodes.push(node);
+            nodeMap[n.id] = node;
+        });
+
+        // Add projects as larger nodes
+        projects.forEach((p, i) => {
+            const node = { id: 'proj-'+i, label: p.name, type: 'project', x: Math.random()*800+50, y: Math.random()*400+50, vx: 0, vy: 0, color: 'var(--accent-blue)', radius: 14 };
+            graphNodes.push(node);
+            nodeMap['proj-'+i] = node;
+        });
+
+        // Add skills as small nodes
+        skillCategories.slice(0, 6).forEach((s, i) => {
+            const node = { id: 'skill-'+i, label: s.name.split(' ')[0], type: 'skill', x: Math.random()*800+50, y: Math.random()*400+50, vx: 0, vy: 0, color: 'var(--accent-emerald)', radius: 6 };
+            graphNodes.push(node);
+        });
+
+        // Add memory nodes
+        memory.forEach((m, i) => {
+            const node = { id: 'mem-'+i, label: m.name, type: 'memory', x: Math.random()*800+50, y: Math.random()*400+50, vx: 0, vy: 0, color: 'var(--accent-violet)', radius: 8 };
+            graphNodes.push(node);
+        });
+
+        // Add edges from note links
+        notes.forEach(n => {
+            n.links.forEach(lid => {
+                if (nodeMap[lid]) {
+                    graphEdges.push({ source: nodeMap[n.id], target: nodeMap[lid] });
+                }
+            });
+        });
+
+        // Connect some projects to notes
+        const projNoteMap = { 'Ta\'allim Education': 'taallim-moc', 'Academix DSS': 'academix-dss', 'CCA-F Certification': 'cca-f-cert', 'KDP Publishing': 'kdp-publishing', 'Research Paper': 'research-paper', 'LifeWorkspace 3.0': 'life-workspace-3' };
+        projects.forEach((p, i) => {
+            if (projNoteMap[p.name] && nodeMap[projNoteMap[p.name]]) {
+                graphEdges.push({ source: nodeMap['proj-'+i], target: nodeMap[projNoteMap[p.name]] });
+            }
+        });
+
+        document.getElementById('graph-count').textContent = graphNodes.length + ' nodes';
+    }
+
+    function renderGraph() {
+        const canvas = document.getElementById('graph-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+        const W = canvas.width, H = canvas.height;
+
+        // Force simulation
+        for (let iter = 0; iter < 100; iter++) {
+            // Repulsion
+            for (let i = 0; i < graphNodes.length; i++) {
+                for (let j = i+1; j < graphNodes.length; j++) {
+                    let dx = graphNodes[j].x - graphNodes[i].x;
+                    let dy = graphNodes[j].y - graphNodes[i].y;
+                    let d = Math.sqrt(dx*dx + dy*dy) || 1;
+                    let f = 500 / (d * d);
+                    graphNodes[i].vx -= dx/d * f;
+                    graphNodes[i].vy -= dy/d * f;
+                    graphNodes[j].vx += dx/d * f;
+                    graphNodes[j].vy += dy/d * f;
+                }
+            }
+            // Attraction
+            graphEdges.forEach(e => {
+                let dx = e.target.x - e.source.x;
+                let dy = e.target.y - e.source.y;
+                let d = Math.sqrt(dx*dx + dy*dy) || 1;
+                let f = (d - 80) * 0.01;
+                e.source.vx += dx/d * f;
+                e.source.vy += dy/d * f;
+                e.target.vx -= dx/d * f;
+                e.target.vy -= dy/d * f;
+            });
+            // Center gravity
+            graphNodes.forEach(n => {
+                n.vx += (W/2 - n.x) * 0.001;
+                n.vy += (H/2 - n.y) * 0.001;
+                n.vx *= 0.9;
+                n.vy *= 0.9;
+                n.x += n.vx;
+                n.y += n.vy;
+                n.x = Math.max(20, Math.min(W-20, n.x));
+                n.y = Math.max(20, Math.min(H-20, n.y));
+            });
+        }
+
+        // Draw edges
+        ctx.strokeStyle = 'rgba(59,130,246,0.15)';
+        ctx.lineWidth = 1;
+        graphEdges.forEach(e => {
+            ctx.beginPath();
+            ctx.moveTo(e.source.x, e.source.y);
+            ctx.lineTo(e.target.x, e.target.y);
+            ctx.stroke();
+        });
+
+        // Draw nodes
+        graphNodes.forEach(n => {
+            const r = n.radius || 10;
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, r, 0, Math.PI*2);
+            const colors = { note: '#06b6d4', project: '#3b82f6', skill: '#10b981', memory: '#8b5cf6' };
+            ctx.fillStyle = colors[n.type] || '#3b82f6';
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            if (r >= 8) {
+                ctx.fillStyle = '#e8ecf4';
+                ctx.font = '10px Outfit';
+                ctx.textAlign = 'center';
+                ctx.fillText(n.label, n.x, n.y + r + 14);
+            }
+        });
+    }
+
+    // === NOTES WITH WIKILINKS ===
+    function renderNotes() {
+        document.getElementById('notes-count').textContent = notes.length + ' notes';
+        document.getElementById('notes-list').innerHTML = notes.map(n => `
+            <div class="recent-item" onclick="openNote('${n.id}')">
+                <div class="ri-icon">${n.bookmarked ? '⭐' : '📝'}</div>
+                <div>
+                    <div class="ri-title">${n.title}</div>
+                    <div class="ri-time">${n.tags.map(t => '#'+t).join(' ')}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function openNote(id) {
+        const note = notes.find(n => n.id === id);
+        if (!note) return;
+
+        const viewSection = document.getElementById('note-view-section');
+        const blSection = document.getElementById('backlinks-section');
+        viewSection.style.display = 'block';
+        blSection.style.display = 'block';
+
+        // Render note with wikilinks
+        const bodyHtml = note.content.replace(/\[\[(\w[\w-]*)\]\]/g, '<span class="wikilink" onclick="openNote(\'$1\')">[[$1]]</span>');
+
+        document.getElementById('note-view').innerHTML = `
+            <div class="note-view">
+                <h2>${note.title}</h2>
+                <div class="note-meta">
+                    ${note.tags.map(t => `<span class="note-tag" onclick="filterByTag('${t}')">${t}</span>`).join('')}
+                    <span class="bookmark-star" onclick="toggleBookmark('${note.id}')">${note.bookmarked ? '⭐' : '☆'}</span>
+                    <span style="font-size:0.72rem;color:var(--text-muted)">Modified: ${note.modified.split('T')[0]}</span>
+                </div>
+                <div class="note-body">${bodyHtml}</div>
+                ${note.links.length ? `<div style="margin-top:16px"><div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:6px">Links to:</div>${note.links.map(l => {
+                    const ln = notes.find(n => n.id === l);
+                    return `<span class="note-tag" onclick="openNote('${l}')">${ln ? ln.title : l}</span>`;
+                }).join(' ')}</div>` : ''}
+            </div>
+        `;
+
+        // Backlinks
+        const backlinks = notes.filter(n => n.links.includes(id) && n.id !== id);
+        document.getElementById('bl-count').textContent = backlinks.length;
+        document.getElementById('backlinks-panel').innerHTML = backlinks.length ? backlinks.map(bl => `
+            <div class="backlink-item" onclick="openNote('${bl.id}')">
+                <div class="bl-title">${bl.title}</div>
+                <div class="bl-excerpt">${bl.content.substring(0, 100)}...</div>
+            </div>
+        `).join('') : '<div style="font-size:0.82rem;color:var(--text-muted)">No backlinks found</div>';
+    }
+
+    function toggleBookmark(id) {
+        const note = notes.find(n => n.id === id);
+        if (note) { note.bookmarked = !note.bookmarked; openNote(id); renderBookmarks(); }
+    }
+
+    // === TAGS ===
+    function renderTags() {
+        const tags = getAllTags();
+        document.getElementById('tag-cloud').innerHTML = tags.map(([tag, count]) => `
+            <span class="tag-pill" onclick="filterByTag('${tag}')">${tag}<span class="tag-count">${count}</span></span>
+        `).join('');
+    }
+
+    function filterByTag(tag) {
+        document.getElementById('tag-filter-name').textContent = '#' + tag;
+        const matching = notes.filter(n => n.tags.includes(tag));
+        document.getElementById('tag-filtered-notes').innerHTML = matching.map(n => `
+            <div class="recent-item" onclick="openNote('${n.id}')">
+                <div class="ri-icon">📝</div>
+                <div>
+                    <div class="ri-title">${n.title}</div>
+                    <div class="ri-time">${n.tags.map(t => '#'+t).join(' ')}</div>
+                </div>
+            </div>
+        `).join('') || '<div style="font-size:0.82rem;color:var(--text-muted)">No notes with this tag</div>';
+    }
+
+    // === INBOX ===
+    function renderInbox() {
+        const pending = inbox.filter(i => !i.done);
+        document.getElementById('inbox-count').textContent = pending.length + ' items';
+        document.getElementById('inbox-list').innerHTML = inbox.map((item, i) => `
+            <div class="inbox-item" style="${item.done ? 'opacity:0.5' : ''}" onclick="toggleInbox(${i})">
+                <div class="inbox-dot" style="${item.done ? 'background:var(--accent-emerald)' : ''}"></div>
+                <div class="inbox-text" style="${item.done ? 'text-decoration:line-through' : ''}">${item.text}</div>
+                <div class="inbox-time">${item.time}</div>
+            </div>
+        `).join('');
+    }
+
+    function toggleInbox(i) { inbox[i].done = !inbox[i].done; renderInbox(); }
+
+    function captureToInbox() {
+        const input = document.getElementById('inbox-capture');
+        if (input.value.trim()) {
+            inbox.unshift({ text: input.value.trim(), time: 'Just now', done: false });
+            input.value = '';
+            renderInbox();
+        }
+    }
+
+    // === QUICK CAPTURE ===
+    function quickCapture() {
+        const input = document.getElementById('capture-input');
+        if (input.value.trim()) {
+            inbox.unshift({ text: input.value.trim(), time: 'Just now', done: false });
+            input.value = '';
+            renderInbox();
+            activities.unshift({ icon: "write", emoji: "📝", text: "Quick captured: " + inbox[0].text.substring(0, 50), time: "Just now" });
+            renderActivity();
+        }
+    }
+
+    // === BOOKMARKS ===
+    function renderBookmarks() {
+        const bms = notes.filter(n => n.bookmarked);
+        document.getElementById('bm-count').textContent = bms.length;
+        document.getElementById('bookmarks-list').innerHTML = bms.map(n => `
+            <div class="recent-item" onclick="openNote('${n.id}')">
+                <div class="ri-icon">⭐</div>
+                <div>
+                    <div class="ri-title">${n.title}</div>
+                    <div class="ri-time">${n.tags.map(t => '#'+t).join(' ')}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // === RECENT EDITS ===
+    function renderRecent() {
+        const sorted = [...notes].sort((a, b) => b.modified.localeCompare(a.modified));
+        document.getElementById('recent-list').innerHTML = sorted.map(n => `
+            <div class="recent-item" onclick="openNote('${n.id}')">
+                <div class="ri-icon">📝</div>
+                <div>
+                    <div class="ri-title">${n.title}</div>
+                    <div class="ri-time">${n.modified.replace('T', ' ')}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // === VERSION HISTORY ===
+    function renderHistory() {
+        document.getElementById('history-list').innerHTML = versionHistory.map(v => `
+            <div class="version-item">
+                <div class="version-dot"></div>
+                <div class="version-info">
+                    <div class="vi-time">${v.time}</div>
+                    <div class="vi-note">${v.note}</div>
+                    <div class="vi-changes">${v.changes}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // === TEMPLATES ===
+    function renderTemplates() {
+        document.getElementById('templates-grid').innerHTML = templates.map(t => `
+            <div class="template-card" onclick="useTemplate('${t.name}')">
+                <div class="tc-icon">${t.icon}</div>
+                <div class="tc-name">${t.name}</div>
+                <div class="tc-desc">${t.desc}</div>
+                <div style="margin-top:8px;display:flex;gap:4px;flex-wrap:wrap">
+                    ${t.fields.map(f => `<span class="note-tag" style="font-size:0.65rem">${f}</span>`).join('')}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function useTemplate(name) {
+        const t = templates.find(tp => tp.name === name);
+        if (t) {
+            const content = t.fields.map(f => `## ${f.charAt(0).toUpperCase() + f.slice(1)}\n\n`).join('\n');
+            inbox.unshift({ text: `Template "${name}" ready — ${t.fields.length} fields to fill`, time: 'Just now', done: false });
+            renderInbox();
+        }
+    }
+
+    // === JOURNAL ===
+    function renderJournal() {
+        document.getElementById('journal-count').textContent = journal.length + ' entries';
+        document.getElementById('journal-list').innerHTML = journal.map(j => `
+            <div class="journal-entry">
+                <div class="je-date">${j.date}</div>
+                <div class="je-title">${j.title}</div>
+                <div class="je-body">${j.body}</div>
+                <div class="je-tags">${j.tags.map(t => `<span class="note-tag">${t}</span>`).join('')}</div>
+            </div>
+        `).join('');
+    }
+
+    // === AGENT CONTROL PANEL ===
+    function renderAgentsLive() {
+        const content = document.getElementById('agents-live-content');
+        document.getElementById('agents-live-count').textContent = agentsLive.length + ' agents';
+
+        let html = '';
+
+        // Ungrouped agents
+        const ungrouped = agentsLive.filter(a => !a.squad);
+        if (ungrouped.length) {
+            html += `<div class="squad-group">
+                <div class="squad-group-title">Independent <span class="squad-count">${ungrouped.length} agents</span></div>
+                ${ungrouped.map(a => renderAgentControlCard(a)).join('')}
+            </div>`;
+        }
+
+        // Group by squad
+        squads.forEach(sq => {
+            const members = agentsLive.filter(a => a.squad === sq.name);
+            if (members.length) {
+                html += `<div class="squad-group">
+                    <div class="squad-group-title" style="color:var(--accent-${sq.color})">${sq.name} <span class="squad-count">${members.length} agents</span></div>
+                    ${members.map(a => renderAgentControlCard(a)).join('')}
+                </div>`;
+            }
+        });
+
+        content.innerHTML = html;
+    }
+
+    function renderAgentControlCard(a) {
+        return `
+            <div class="agent-control-card">
+                <div class="agent-control-header">
+                    <div class="agent-control-name">
+                        <span class="agent-dot ${a.status === 'online' ? 'online' : 'idle'}"></span>
+                        ${a.name}
+                    </div>
+                    <span class="status-badge ${a.status}">${a.status}</span>
+                </div>
+                <div class="agent-control-model">${a.model}</div>
+                <div class="agent-control-skills">${a.skills.map(s => `<span class="note-tag">${s}</span>`).join('')}</div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:0.75rem;color:var(--text-muted)">
+                    <span>Last run: ${a.lastRun}</span>
+                    <span>${a.tasksRun} tasks run</span>
+                </div>
+                <div class="agent-control-actions">
+                    <button class="agent-btn primary" onclick="runAgent('${a.id}')">Run Task</button>
+                    <button class="agent-btn" onclick="viewAgentLogs('${a.id}')">Logs</button>
+                </div>
+            </div>
+        `;
+    }
+
+    function runAgent(id) {
+        const agent = agentsLive.find(a => a.id === id);
+        if (agent) {
+            agent.status = 'running';
+            renderAgentsLive();
+            setTimeout(() => {
+                agent.status = 'online';
+                renderAgentsLive();
+                activities.unshift({ icon: "code", emoji: "🤖", text: `${agent.name} completed task`, time: "Just now" });
+                renderActivity();
+            }, 2000);
+        }
+    }
+
+    function viewAgentLogs(id) {
+        const agent = agentsLive.find(a => a.id === id);
+        if (agent) {
+            inbox.unshift({ text: `Viewing logs for ${agent.name} (${agent.tasksRun} total runs)`, time: 'Just now', done: false });
+            renderInbox();
+        }
+    }
+
+    // === AUTOPILOTS ===
+    function renderAutopilots() {
+        const content = document.getElementById('autopilots-content');
+        document.getElementById('autopilots-count').textContent = autopilots.length + ' autopilots';
+
+        content.innerHTML = autopilots.map((ap, i) => `
+            <div class="autopilot-card">
+                <div class="autopilot-header">
+                    <div class="autopilot-name">${ap.name}</div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" ${ap.enabled ? 'checked' : ''} onchange="toggleAutopilot(${i})">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="autopilot-schedule">${ap.schedule}</div>
+                <div class="autopilot-desc">${ap.description}</div>
+                <div class="autopilot-meta">
+                    <span>Last run: ${ap.lastRun}</span>
+                    <span>Next run: ${ap.nextRun}</span>
+                    <span>Runs: ${ap.runsSuccess}/${ap.runsTotal} success</span>
+                </div>
+                <div class="agent-control-actions">
+                    <button class="agent-btn primary" onclick="runAutopilot(${i})">Run Now</button>
+                    <button class="agent-btn" onclick="viewAutopilotLogs(${i})">Logs</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function toggleAutopilot(i) {
+        autopilots[i].enabled = !autopilots[i].enabled;
+        autopilots[i].status = autopilots[i].enabled ? 'active' : 'paused';
+        renderAutopilots();
+    }
+
+    function runAutopilot(i) {
+        const ap = autopilots[i];
+        ap.status = 'running';
+        renderAutopilots();
+        setTimeout(() => {
+            ap.status = 'active';
+            ap.runsTotal++;
+            ap.runsSuccess++;
+            ap.lastRun = new Date().toISOString().slice(0, 16).replace('T', ' ');
+            renderAutopilots();
+            activities.unshift({ icon: "code", emoji: "🔄", text: `Autopilot "${ap.name}" completed`, time: "Just now" });
+            renderActivity();
+        }, 2500);
+    }
+
+    function viewAutopilotLogs(i) {
+        const ap = autopilots[i];
+        inbox.unshift({ text: `Logs for "${ap.name}": ${ap.runsSuccess}/${ap.runsTotal} successful runs`, time: 'Just now', done: false });
+        renderInbox();
+    }
+
+    // === GOALS ===
+    function renderGoals() {
+        const content = document.getElementById('goals-content');
+        document.getElementById('goals-count').textContent = goals.length + ' goals';
+
+        content.innerHTML = goals.map((g, gi) => `
+            <div class="goal-card">
+                <div class="goal-header">
+                    <div class="goal-title">${g.title}</div>
+                    <span class="status-badge ${g.status}">${g.status}</span>
+                </div>
+                <div class="goal-desc">${g.description}</div>
+                <div class="goal-meta">
+                    <div class="goal-meta-item">Deadline: ${g.deadline}</div>
+                    <div class="goal-meta-item">Tasks: ${g.tasks.filter(t => t.done).length}/${g.tasks.length}</div>
+                </div>
+                <div class="goal-progress">
+                    <div class="goal-progress-header">
+                        <span class="goal-progress-label">Progress</span>
+                        <span class="goal-progress-pct">${g.progress}%</span>
+                    </div>
+                    <div class="progress-bar"><div class="progress-fill blue" style="width:${g.progress}%"></div></div>
+                </div>
+                <div class="goal-tasks">${g.tasks.map((t, ti) => `
+                    <div class="goal-task">
+                        <div class="goal-task-check ${t.done ? 'done' : ''}" onclick="toggleGoalTask(${gi},${ti})">${t.done ? '&#10003;' : ''}</div>
+                        <div class="goal-task-text ${t.done ? 'done' : ''}">${t.text}</div>
+                    </div>
+                `).join('')}</div>
+                <div class="goal-agents">${g.agents.map(aid => {
+                    const a = agentsLive.find(ag => ag.id === aid);
+                    return a ? `<div class="goal-agent-chip"><span class="agent-dot ${a.status === 'online' ? 'online' : 'idle'}"></span>${a.name}</div>` : '';
+                }).join('')}</div>
+            </div>
+        `).join('');
+    }
+
+    function toggleGoalTask(gi, ti) {
+        goals[gi].tasks[ti].done = !goals[gi].tasks[ti].done;
+        const done = goals[gi].tasks.filter(t => t.done).length;
+        goals[gi].progress = Math.round((done / goals[gi].tasks.length) * 100);
+        renderGoals();
+    }
+
+    // === NAV ===
+    const allSections = ['overview','graph','journal','notes','tags','inbox','bookmarks','recent','history','templates','training','agents','agents-live','autopilots','goals','skills','projects','academix'];
+
+    function showSection(id) {
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        const btns = document.querySelectorAll('.nav-btn');
+        btns.forEach(b => { if (b.textContent.toLowerCase().includes(id.substring(0,4)) || b.onclick?.toString().includes(id)) b.classList.add('active'); });
+        allSections.forEach(s => {
+            const el = document.getElementById(s);
+            if (el) el.classList.toggle('hidden', s !== id);
+        });
+        if (id === 'graph') { buildGraph(); setTimeout(renderGraph, 100); }
+    }
+
+    // === SEARCH ===
+    document.getElementById('search').addEventListener('input', (e) => {
+        const q = e.target.value.toLowerCase();
+        document.querySelectorAll('.project-card, .recent-item, .inbox-item, .tag-pill, .template-card').forEach(card => {
+            const text = card.textContent.toLowerCase();
+            card.style.opacity = !q || text.includes(q) ? '1' : '0.3';
+        });
+    });
+
+    // === KEYBOARD SHORTCUTS ===
+    document.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); document.getElementById('search').focus(); }
+        if ((e.metaKey || e.ctrlKey) && e.key === 'i') { e.preventDefault(); showSection('inbox'); document.getElementById('inbox-capture').focus(); }
+        if ((e.metaKey || e.ctrlKey) && e.key === 'j') { e.preventDefault(); showSection('journal'); }
+        if ((e.metaKey || e.ctrlKey) && e.key === 'b') { e.preventDefault(); showSection('bookmarks'); }
+        if ((e.metaKey || e.ctrlKey) && e.key === 'p') { e.preventDefault(); showSection('projects'); }
+        if ((e.metaKey || e.ctrlKey) && e.key === 'a') { e.preventDefault(); showSection('academix'); }
+    });
+
+    // === ANIMATE COUNTERS ===
+    function animateCounters() {
+        document.querySelectorAll('[data-target]').forEach(el => {
+            const target = parseInt(el.dataset.target);
+            const duration = 1500, start = performance.now();
+            function update(now) {
+                const p = Math.min((now - start) / duration, 1);
+                el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))).toLocaleString();
+                if (p < 1) requestAnimationFrame(update);
+            }
+            requestAnimationFrame(update);
+        });
+    }
+
+    // === CLOCK ===
+    function updateClock() {
+        document.getElementById('clock').textContent = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+    }
+
+    // === CROSS-PROJECT FEED ===
+    const projectFeedData = [
+        { project: "life", project_name: "LifeWorkspace 3.0", date: "2026-08-08", title: "Monorepo consolidated, 422+ PDFs indexed", files: "repo, .session-state.json, workspace-audit.md", breaking: false, alert: "" },
+        { project: "life", project_name: "LifeWorkspace 3.0", date: "2026-08-08", title: "5 broken MCP paths fixed (MAHI → projects/active/LifeWorkspace)", files: "opencode.json, cline_mcp_settings.json", breaking: false, alert: "All 8 MAHI agents now connect to correct MCP servers" },
+        { project: "life", project_name: "LifeWorkspace 3.0", date: "2026-08-08", title: "61 image-based PDFs OCR'd via Tesseract", files: "15_Advanced_Tools/ocr/", breaking: false, alert: "61 new .txt files in ocr/ directory" },
+        { project: "life", project_name: "LifeWorkspace 3.0", date: "2026-08-08", title: "Cross-project coordination system launched", files: "UPDATES.md, AGENTS.md per project", breaking: false, alert: "Check UPDATES.md before starting work" },
+        { project: "dsc", project_name: "Digital Services Center", date: "2026-08-08", title: "Cross-project coordination established", files: "UPDATES.md, AGENTS.md", breaking: false, alert: "" },
+        { project: "kdp", project_name: "KDP Publishing", date: "2026-08-08", title: "First book published, cross-project tracking added", files: "UPDATES.md, AGENTS.md", breaking: false, alert: "" },
+        { project: "taallim", project_name: "Ta'allim Pilot", date: "2026-08-08", title: "Cross-project coordination established", files: "UPDATES.md, AGENTS.md", breaking: false, alert: "" },
+        { project: "academix", project_name: "Academix DSS", date: "2026-08-08", title: "Education + Hardware editions merged, cross-project tracking", files: "UPDATES.md, AGENTS.md", breaking: false, alert: "" },
+    ];
+    let projectFeedFilter = 'all';
+
+    function filterProjectFeed(filter) {
+        projectFeedFilter = filter;
+        document.querySelectorAll('#projects .filter-btn').forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
+        renderProjectsFeed();
+    }
+
+    function renderProjectsFeed() {
+        const el = document.getElementById('projects-feed');
+        if (!el) return;
+        const filtered = projectFeedFilter === 'all'
+            ? projectFeedData
+            : projectFeedData.filter(p => p.project === projectFeedFilter);
+
+        document.getElementById('projects-count').textContent = filtered.length + ' updates';
+
+        el.innerHTML = filtered.map(p => `
+            <div class="activity-item" style="border-left:3px solid ${p.breaking ? '#ef4444' : '#3b82f6'};padding:12px;margin-bottom:8px;background:rgba(255,255,255,0.03);border-radius:8px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                    <span style="font-weight:600;font-size:0.85rem;color:#60a5fa">${p.project_name}</span>
+                    <span style="font-size:0.72rem;color:#888">${p.date}</span>
+                </div>
+                <div style="font-size:0.82rem;font-weight:500;margin-bottom:4px">${p.title}</div>
+                <div style="font-size:0.72rem;color:#888;font-family:'JetBrains Mono',monospace">${p.files}</div>
+                ${p.alert ? `<div style="font-size:0.72rem;color:#fbbf24;margin-top:6px;padding:6px 8px;background:rgba(251,191,36,0.1);border-radius:4px;border-left:2px solid #fbbf24">⚡ ${p.alert}</div>` : ''}
+            </div>
+        `).join('');
+
+        const links = document.getElementById('projects-links');
+        if (links) {
+            links.innerHTML = [
+                { name: "LifeWorkspace", path: "C:\\Users\\Admin\\My Drive\\LifeWorkspace", icon: "📂" },
+                { name: "Monorepo", path: "C:\\Users\\Admin\\projects\\active\\LifeWorkspace", icon: "📦" },
+                { name: "DSC", path: "C:\\Users\\Admin\\projects\\active\\LifeWorkspace\\digital-services-center", icon: "🏢" },
+                { name: "KDP", path: "C:\\Users\\Admin\\projects\\active\\kdp-publishing-copilot", icon: "📖" },
+                { name: "Academix", path: "C:\\Users\\Admin\\projects\\active\\academix-dss", icon: "📊" },
+            ].map(l => `
+                <div class="project-card" style="padding:8px 12px;cursor:pointer;flex:0 0 auto" onclick="window.electron?.openExternal?.('${l.path}') || navigator.clipboard?.writeText('${l.path}')">
+                    <span style="font-size:0.82rem">${l.icon} ${l.name}</span>
+                </div>
+            `).join('');
+        }
+    }
+
+    // === ACADEMIX DSS ===
+    const academixModules = [
+        { name: "Inventory Management", status: "done", subs: 12, detail: "Stock tracking, reorder, alerts" },
+        { name: "Invoice System", status: "done", subs: 8, detail: "Auto-numbering, 12-digit format" },
+        { name: "CMUP Algorithm", status: "done", subs: 3, detail: "Chronological fixed, FIFO" },
+        { name: "Audit Trail", status: "done", subs: 2, detail: "UserInterfaceOnly logging" },
+        { name: "Dashboard", status: "done", subs: 5, detail: "Real-time KPIs, charts" },
+        { name: "Reporting", status: "done", subs: 4, detail: "Stock reports, financial summaries" },
+        { name: "User Management", status: "done", subs: 3, detail: "Roles, permissions, login" },
+        { name: "Backup/Restore", status: "done", subs: 2, detail: "Automated backup system" },
+    ];
+
+    const academixEditions = [
+        { name: "Education (SIS)", progress: 92, desc: "Student info, grades, bulletins" },
+        { name: "Hardware (Inventory)", progress: 95, desc: "Stock management, invoicing, CMUP" },
+    ];
+
+    function renderAcademix() {
+        const el = document.getElementById('academix-content');
+        if (!el) return;
+
+        let html = '<div style="margin-bottom:16px">';
+        html += '<div class="section-title" style="font-size:0.9rem;margin-bottom:8px">Editions</div>';
+        academixEditions.forEach(e => {
+            html += `
+                <div class="activity-item" style="padding:10px;margin-bottom:6px;background:rgba(255,255,255,0.03);border-radius:8px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                        <span style="font-weight:600;font-size:0.85rem">${e.name}</span>
+                        <span style="font-size:0.72rem;color:#888">${e.progress}%</span>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.08);border-radius:4px;height:4px;margin-bottom:4px">
+                        <div style="background:linear-gradient(90deg,#06b6d4,#3b82f6);height:100%;width:${e.progress}%;border-radius:4px"></div>
+                    </div>
+                    <div style="font-size:0.72rem;color:#888">${e.desc}</div>
+                </div>`;
+        });
+        html += '</div>';
+
+        html += '<div style="margin-bottom:16px">';
+        html += '<div class="section-title" style="font-size:0.9rem;margin-bottom:8px">VBA Modules (35 total, 274 Sub/Func)</div>';
+        academixModules.forEach(m => {
+            html += `
+                <div class="activity-item" style="padding:8px 10px;margin-bottom:4px;background:rgba(255,255,255,0.02);border-radius:6px;display:flex;justify-content:space-between;align-items:center">
+                    <div>
+                        <span style="font-size:0.82rem;font-weight:500">${m.name}</span>
+                        <span style="font-size:0.72rem;color:#888;margin-left:8px">${m.detail}</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px">
+                        <span style="font-size:0.72rem;color:#888;font-family:'JetBrains Mono',monospace">${m.subs} subs</span>
+                        <span style="color:#22c55e;font-size:0.72rem">✓</span>
+                    </div>
+                </div>`;
+        });
+        html += '</div>';
+
+        html += '<div style="margin-bottom:16px">';
+        html += '<div class="section-title" style="font-size:0.9rem;margin-bottom:8px">Thesis Status</div>';
+        html += `
+            <div class="activity-item" style="padding:12px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);border-radius:8px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                    <span style="font-weight:600;font-size:0.85rem;color:#22c55e">34/36 PASS</span>
+                    <span style="font-size:0.72rem;color:#888">BTS CNEPD</span>
+                </div>
+                <div style="font-size:0.72rem;color:#888">Logistics.Public.Sector.Refactor — 4 chapters, 17 مباحث, 52 مطالب</div>
+            </div>`;
+        html += '</div>';
+
+        html += '<div>';
+        html += '<div class="section-title" style="font-size:0.9rem;margin-bottom:8px">Quick Actions</div>';
+        html += `
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+                <div class="project-card" style="padding:8px 12px;cursor:pointer;flex:0 0 auto" onclick="navigator.clipboard?.writeText('C:\\\\Users\\\\Admin\\\\projects\\\\active\\\\academix-dss')">
+                    <span style="font-size:0.82rem">📂 Open Repo</span>
+                </div>
+                <div class="project-card" style="padding:8px 12px;cursor:pointer;flex:0 0 auto" onclick="navigator.clipboard?.writeText('C:\\\\Users\\\\Admin\\\\projects\\\\active\\\\logistics-public-sector-refactor')">
+                    <span style="font-size:0.82rem">📦 Thesis Repo</span>
+                </div>
+                <div class="project-card" style="padding:8px 12px;cursor:pointer;flex:0 0 auto" onclick="navigator.clipboard?.writeText('https://github.com/kamelmh/academix-dss')">
+                    <span style="font-size:0.82rem">🔗 GitHub</span>
+                </div>
+            </div>`;
+        html += '</div>';
+
+        el.innerHTML = html;
+    }
+
+    // === INIT ===
+    renderProjects();
+    renderTraining();
+    renderActivity();
+    renderSkills();
+    renderMemory();
+    renderNotes();
+    renderTags();
+    renderInbox();
+    renderBookmarks();
+    renderRecent();
+    renderHistory();
+    renderTemplates();
+    renderJournal();
+    renderAgentsLive();
+    renderAutopilots();
+    renderGoals();
+    renderProjectsFeed();
+    renderAcademix();
+    animateCounters();
+    updateClock();
+    setInterval(updateClock, 30000);
+
+    // Auto-select first note on notes tab
+    document.querySelector('[onclick="showSection(\'notes\')"]').addEventListener('click', () => {
+        setTimeout(() => { if (notes.length) openNote(notes[0].id); }, 200);
+    });
+    </script>
+</body>
+</html>

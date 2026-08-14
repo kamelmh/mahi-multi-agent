@@ -71,7 +71,7 @@ goto astro
 
 :astro-start
 title AstroDashboard Server
-cd /d C:\Users\Admin\AstroDashboard
+cd /d C:\Users\Admin\Projects\active\apps\mahi-spiritual\astrodashboard\AstroDashboard
 start "" /min python server.py
 echo.
 echo  Server started at http://localhost:9090
@@ -80,7 +80,7 @@ goto main
 
 :astro-start-open
 title AstroDashboard Server
-cd /d C:\Users\Admin\AstroDashboard
+cd /d C:\Users\Admin\Projects\active\apps\mahi-spiritual\astrodashboard\AstroDashboard
 start "" /min python server.py
 timeout /t 2 >nul
 start http://localhost:9090
@@ -113,7 +113,7 @@ goto mahi
 
 :mahi-interactive
 title MAHI Multi-Agent
-cd /d C:\Users\Admin\MAHI
+cd /d C:\Users\Admin\Projects\active\agents\mahi-multi-agent
 python MAHI.py
 if %errorlevel% neq 0 (echo [ERROR] MAHI failed & pause)
 goto main
@@ -123,7 +123,7 @@ cls
 set /p task="  Enter task: "
 if "%task%"=="" goto mahi
 title MAHI Task
-cd /d C:\Users\Admin\MAHI
+cd /d C:\Users\Admin\Projects\active\agents\mahi-multi-agent
 python MAHI.py --task "%task%"
 echo.
 pause
@@ -131,7 +131,7 @@ goto mahi
 
 :mahi-status
 title MAHI Status
-cd /d C:\Users\Admin\MAHI
+cd /d C:\Users\Admin\Projects\active\agents\mahi-multi-agent
 python MAHI.py --status
 echo.
 pause
@@ -279,7 +279,7 @@ echo.
 echo  ============================================
 echo.
 echo  Opening Academix DSS...
-start "" "C:\Users\Admin\Dropbox\Logistics.Public.Sector.Refactor\ERP_v13.4.xlsm"
+start "" "C:\Users\Admin\Projects\active\apps\academix-dss\education\ERP_dss_inventory_system_v13.4_for_directorate_of_education.xlsm"
 echo.
 echo  Press any key after taking screenshots...
 pause >nul
@@ -305,7 +305,7 @@ echo    [0]  Back
 echo  ============================================
 echo.
 set /p t="  > "
-if "%t%"=="1" start "" "C:\Users\Admin\Dropbox\Logistics.Public.Sector.Refactor\ERP_v13.4.xlsm" & goto tools
+if "%t%"=="1" start "" "C:\Users\Admin\Projects\active\apps\academix-dss\education\ERP_dss_inventory_system_v13.4_for_directorate_of_education.xlsm" & goto tools
 if "%t%"=="2" start obsidian://open?vault=LifeWorkspace & goto tools
 if "%t%"=="3" start https://grok.com & goto tools
 if "%t%"=="4" code . & goto tools
@@ -315,7 +315,7 @@ goto tools
 
 :jobsearch
 title AI Job Search
-code "C:\Users\Admin\Projects\active\job-search"
+code "C:\Users\Admin\Projects\active\career\lifeworkspace-career-map"
 if %errorlevel% neq 0 (echo [ERROR] VS Code failed & pause)
 goto tools
 
@@ -345,7 +345,7 @@ if "%q%"=="3" goto kimi
 if "%q%"=="4" start https://grok.com & goto quick
 if "%q%"=="5" start https://kamelmahi.netlify.app & goto quick
 if "%q%"=="6" start obsidian://open?vault=LifeWorkspace & goto quick
-if "%q%"=="7" start "" "C:\Users\Admin\Dropbox\Logistics.Public.Sector.Refactor\ERP_v13.4.xlsm" & goto quick
+if "%q%"=="7" start "" "C:\Users\Admin\Projects\active\apps\academix-dss\education\ERP_dss_inventory_system_v13.4_for_directorate_of_education.xlsm" & goto quick
 if "%q%"=="8" code . & goto quick
 if "%q%"=="9" goto astro-start-open
 if "%q%"=="10" goto mahi

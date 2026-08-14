@@ -56,9 +56,21 @@ MAHI.py              # Entry point
 │   ├── research_agent.py
 │   ├── spiritual_agent.py
 │   └── ...
-├── mcp-*.py         # CLI tools (obsidian, session-intel, command-center)
-└── context-engine/  # Session analysis + knowledge graph
+├── mcp-*.py         # MCP servers (obsidian, session-intel, command-center, mahi)
+├── ui/gadget/       # Web dashboard (18 tabs) — absorbed from lifeworkspace-gadget
+├── brain/           # Knowledge: system-design-notes, session analysis
+├── tools/pdf-tools/ # PDF utilities — absorbed from lifeworkspace-pdf-tools
+└── orchestration/   # Automation (journal, session autosave, weekly review)
 ```
+
+## Absorbed Projects (2026-08-14)
+
+| Absorbed | Origin | New home |
+|----------|--------|----------|
+| Gadget dashboard | `docs/lifeworkspace-gadget` (local repo) | `ui/gadget/` |
+| System design notes | `research/system-design-notes` (local repo) | `brain/system-design-notes/` |
+| PDF tools | `libs/lifeworkspace-pdf-tools` (GitHub, archived) | `tools/pdf-tools/` |
+| Automation scripts | `libs/dev-toolkit/automation` | `orchestration/` |
 
 ## License
 

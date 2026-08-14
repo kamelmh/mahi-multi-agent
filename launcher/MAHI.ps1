@@ -180,7 +180,7 @@ while ($running) {
                     Write-Host ""
                     Write-Host "  ========================================" -ForegroundColor Cyan
                     Write-Host ""
-                    Start-Process "C:\Users\Admin\Dropbox\Logistics.Public.Sector.Refactor\ERP_v13.4.xlsm"
+                    Start-Process "C:\Users\Admin\Projects\active\apps\academix-dss\education\ERP_dss_inventory_system_v13.4_for_directorate_of_education.xlsm"
                     Read-Host "  Press Enter after taking screenshots"
                 }
                 "4" { Start-Process "https://kamelmahi.netlify.app" }
@@ -189,7 +189,7 @@ while ($running) {
         "3" {
             $t = Show-ToolsMenu
             switch ($t) {
-                "1" { Start-Process "C:\Users\Admin\Dropbox\Logistics.Public.Sector.Refactor\ERP_v13.4.xlsm" }
+                "1" { Start-Process "C:\Users\Admin\Projects\active\apps\academix-dss\education\ERP_dss_inventory_system_v13.4_for_directorate_of_education.xlsm" }
                 "2" { Start-Process "obsidian://open?vault=LifeWorkspace" }
                 "3" { Start-Process "https://grok.com" }
                 "4" { code . }
@@ -208,7 +208,7 @@ while ($running) {
                 "4" { Start-Process "https://grok.com" }
                 "5" { Start-Process "https://kamelmahi.netlify.app" }
                 "6" { Start-Process "obsidian://open?vault=LifeWorkspace" }
-                "7" { Start-Process "C:\Users\Admin\Dropbox\Logistics.Public.Sector.Refactor\ERP_v13.4.xlsm" }
+                "7" { Start-Process "C:\Users\Admin\Projects\active\apps\academix-dss\education\ERP_dss_inventory_system_v13.4_for_directorate_of_education.xlsm" }
                 "8" { code . }
             }
         }

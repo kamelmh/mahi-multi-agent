@@ -1,0 +1,51 @@
+{
+  "sections": {
+    "overview_stats": 4,
+    "overview_projects": 10,
+    "overview_activities": 8,
+    "graph": {
+      "canvas": true,
+      "nodes": "41 nodes"
+    },
+    "journal": 5,
+    "notes_list": 19,
+    "note_view": {
+      "rendered": true,
+      "wikilinks": 2,
+      "backlinks": 16
+    },
+    "tags": 47,
+    "inbox": 5,
+    "bookmarks": 5,
+    "recent": 19,
+    "history": 8,
+    "templates": 8,
+    "training": 12,
+    "agents": 8,
+    "agents_live": {
+      "cards": 10,
+      "squads": 6
+    },
+    "autopilots": {
+      "cards": 3,
+      "toggles": 3
+    },
+    "goals": {
+      "cards": 5,
+      "tasks": 29,
+      "agents": 8
+    },
+    "skills": 12
+  },
+  "features": {},
+  "issues": [],
+  "findings": [],
+  "interactive": {
+    "inbox_add": true,
+    "search_dimmed": 145,
+    "shortcut_ctrl_i": true,
+    "shortcut_ctrl_j": true,
+    "quick_capture": true
+  },
+  "total_tabs": 16
+}
