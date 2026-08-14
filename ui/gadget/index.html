@@ -506,6 +506,7 @@
             <button class="nav-btn" onclick="showSection('skills')">Skills</button>
             <button class="nav-btn" onclick="showSection('projects')">Projects</button>
             <button class="nav-btn" onclick="showSection('academix')">Academix</button>
+            <button class="nav-btn" onclick="showSection('hub')">Dashboard Hub</button>
         </div>
 
         <!-- OVERVIEW -->
@@ -803,6 +804,23 @@
                     </div>
                 </div>
                 <div id="academix-content"></div>
+            </div>
+        </div>
+
+        <!-- DASHBOARD HUB -->
+        <div id="hub" class="hidden">
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">Dashboard Hub <span class="section-badge">live apps</span></div>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px" id="hub-grid"></div>
+                <div class="section" style="margin-top:16px">
+                    <div class="section-title" style="font-size:0.9rem;margin-bottom:8px">Embedded View</div>
+                    <div id="hub-iframe-wrap" style="position:relative">
+                        <iframe id="hub-iframe" src="about:blank" style="width:100%;height:600px;border:1px solid var(--border);border-radius:12px;background:var(--bg-card);display:none" allowfullscreen></iframe>
+                        <div id="hub-iframe-note" style="padding:20px;text-align:center;color:var(--text-muted);font-size:0.85rem">Select an app to load its dashboard inline.</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1960,7 +1978,7 @@
     }
 
     // === NAV ===
-    const allSections = ['overview','graph','journal','notes','tags','inbox','bookmarks','recent','history','templates','training','agents','agents-live','autopilots','goals','skills','projects','academix'];
+    const allSections = ['overview','graph','journal','notes','tags','inbox','bookmarks','recent','history','templates','training','agents','agents-live','autopilots','goals','skills','projects','academix','hub'];
 
     function showSection(id) {
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -1990,6 +2008,7 @@
         if ((e.metaKey || e.ctrlKey) && e.key === 'b') { e.preventDefault(); showSection('bookmarks'); }
         if ((e.metaKey || e.ctrlKey) && e.key === 'p') { e.preventDefault(); showSection('projects'); }
         if ((e.metaKey || e.ctrlKey) && e.key === 'a') { e.preventDefault(); showSection('academix'); }
+        if ((e.metaKey || e.ctrlKey) && e.key === 'h') { e.preventDefault(); showSection('hub'); }
     });
 
     // === ANIMATE COUNTERS ===
@@ -2181,6 +2200,35 @@
     document.querySelector('[onclick="showSection(\'notes\')"]').addEventListener('click', () => {
         setTimeout(() => { if (notes.length) openNote(notes[0].id); }, 200);
     });
+
+    // === DASHBOARD HUB ===
+    const hubApps = [
+        { name: "Teaching Platform", icon: "📚", desc: "Streamlit: exercise generator, flashcards, MCQ, mind maps, assessments", url: "http://localhost:8501", status: "local" },
+        { name: "Spiritual Dashboard", icon: "🕯️", desc: "Astrology + Quran practice dashboard (live)", url: "https://mahi-spiritual.netlify.app", status: "live" },
+        { name: "Academix DSS Web", icon: "📦", desc: "VBA DSS web viewer (Univer spike — when running)", url: "http://localhost:5173", status: "dev" },
+        { name: "SIS Ta'allim", icon: "🏫", desc: "Student Information System", url: "http://localhost:5000", status: "dev" }
+    ];
+    function renderHub() {
+        const grid = document.getElementById('hub-grid');
+        grid.innerHTML = hubApps.map((a, i) => `
+            <div class="agent-chip" style="flex-direction:column;align-items:flex-start;gap:8px;padding:16px" onclick="loadHubApp(${i})">
+                <div style="display:flex;align-items:center;gap:10px;width:100%">
+                    <span style="font-size:1.3rem">${a.icon}</span>
+                    <span class="agent-name" style="font-size:0.9rem">${a.name}</span>
+                    <span class="agent-model" style="margin-left:auto">${a.status}</span>
+                </div>
+                <span style="font-size:0.75rem;color:var(--text-secondary);line-height:1.4">${a.desc}</span>
+            </div>`).join('');
+    }
+    function loadHubApp(i) {
+        const a = hubApps[i];
+        const iframe = document.getElementById('hub-iframe');
+        const note = document.getElementById('hub-iframe-note');
+        iframe.src = a.url;
+        iframe.style.display = 'block';
+        note.style.display = 'none';
+    }
+    renderHub();
     </script>
 </body>
 </html>
