@@ -60,6 +60,7 @@ MAHI.py              # Entry point
 ├── ui/gadget/       # Web dashboard (18 tabs) — absorbed from lifeworkspace-gadget
 ├── brain/           # Knowledge: system-design-notes, session analysis
 ├── tools/pdf-tools/ # PDF utilities — absorbed from lifeworkspace-pdf-tools
+├── career/          # CVs, letters, applications — absorbed from lifeworkspace-career-map
 └── orchestration/   # Automation (journal, session autosave, weekly review)
 ```
 
@@ -71,6 +72,7 @@ MAHI.py              # Entry point
 | System design notes | `research/system-design-notes` (local repo) | `brain/system-design-notes/` |
 | PDF tools | `libs/lifeworkspace-pdf-tools` (GitHub, archived) | `tools/pdf-tools/` |
 | Automation scripts | `libs/dev-toolkit/automation` | `orchestration/` |
+| Career map | `apps/lifeworkspace-career-map` (GitHub v1+v2 archived) | `career/` |
 
 ## License
 
