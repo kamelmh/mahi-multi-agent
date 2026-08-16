@@ -111,9 +111,19 @@ def classify(user_input: str) -> Classification:
 
 
 def _select_model(agent_id: str, urgency: str) -> str:
-    """Select best model for agent + urgency."""
+    """Select best model for agent + urgency.
+
+    Model tiers (from awesome-free-llm-apis):
+    - instant: fastest inference (Groq, Cerebras)
+    - normal: balanced speed/quality (OpenRouter free tier)
+    - quality: best output (larger models, direct APIs)
+    - context: large context window (Google Gemini 1M)
+    """
     MODELS = {
-        "instant": "google/gemma-4-26b-a4b-it:free",
+        # Tier 1: Instant — Groq/Cerebras for sub-second responses
+        "instant": "groq/llama-3.3-70b-versatile",
+
+        # Tier 2: Normal — OpenRouter free tier, balanced
         "normal": {
             "code": "nvidia/nemotron-3-nano-30b-a3b:free",
             "code-pro": "nvidia/nemotron-3-super-120b-a12b:free",
@@ -126,13 +136,20 @@ def _select_model(agent_id: str, urgency: str) -> str:
             "spiritual": "google/gemma-4-26b-a4b-it:free",
             "quick": "google/gemma-4-26b-a4b-it:free",
         },
+
+        # Tier 3: Quality — larger models for complex tasks
         "quality": "nvidia/nemotron-3-super-120b-a12b:free",
+
+        # Tier 4: Context — 1M window for large documents
+        "context": "google/gemini-2.5-flash",
     }
 
     if urgency == "instant":
         return MODELS["instant"]
     elif urgency == "quality":
         return MODELS["quality"]
+    elif urgency == "context":
+        return MODELS["context"]
     else:
         return MODELS["normal"].get(agent_id, "llama-3.3-70b-versatile")
 
