@@ -1,0 +1,37 @@
+{
+  "tabs": {
+    "count": 19
+  },
+  "hub": {
+    "app_cards": 4,
+    "launch_buttons": 2,
+    "api_apps": [
+      {
+        "id": "teaching",
+        "status": "running",
+        "running": true
+      },
+      {
+        "id": "spiritual",
+        "status": "live",
+        "running": true
+      },
+      {
+        "id": "academix",
+        "status": "stopped",
+        "running": false
+      },
+      {
+        "id": "sis",
+        "status": "stopped",
+        "running": false
+      },
+      {
+        "id": "floci",
+        "status": "stopped",
+        "running": false
+      }
+    ]
+  },
+  "issues": []
+}

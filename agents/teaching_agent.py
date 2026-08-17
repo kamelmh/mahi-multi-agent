@@ -11,7 +11,7 @@ def create_teaching_agent() -> BaseAgent:
         model_fallback="nvidia/nemotron-3-super-120b-a12b:free",
         provider="openrouter",
         capabilities=["exercise generation", "lesson plans", "grading", "curriculum design"],
-        tools=["file_read", "file_write", "templates"],
+        tools=["file_read", "file_write", "templates", "file_search"],
         max_concurrent=1,
         timeout=120,
     )

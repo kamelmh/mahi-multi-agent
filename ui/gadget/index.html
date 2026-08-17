@@ -457,6 +457,56 @@
         .goal-agent-chip { padding: 4px 10px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; font-size: 0.72rem; color: var(--text-secondary); display: flex; align-items: center; gap: 4px; }
         .goal-agent-chip .agent-dot { width: 5px; height: 5px; }
 
+        /* ==== Dashboard Hub ==== */
+        .hub-section { padding-top: 8px; }
+        .hub-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+        .hub-header h2 { font-size: 1.25rem; font-weight: 600; }
+        .hub-refresh-btn { display: flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; color: var(--text-secondary); font-family: 'Outfit', sans-serif; font-size: 0.8rem; cursor: pointer; transition: all 0.25s ease; }
+        .hub-refresh-btn:hover { border-color: var(--accent-blue); color: var(--text-primary); }
+        .hub-refresh-btn.spinning .btn-icon { animation: hub-spin 0.8s linear infinite; }
+        @keyframes hub-spin { to { transform: rotate(360deg); } }
+        .hub-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 20px; }
+        .hub-app-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; cursor: pointer; transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease; display: flex; flex-direction: column; gap: 12px; }
+        .hub-app-card:hover { transform: translateY(-3px); border-color: var(--border-glow); box-shadow: 0 8px 28px rgba(0,0,0,0.35); }
+        .hub-app-header { display: flex; align-items: flex-start; gap: 12px; }
+        .hub-app-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; background: var(--bg-elevated); border: 1px solid var(--border); flex-shrink: 0; }
+        .hub-app-info { flex: 1; min-width: 0; }
+        .hub-app-name { font-weight: 600; font-size: 0.95rem; margin-bottom: 3px; }
+        .hub-app-type { font-size: 0.72rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+        .hub-app-desc { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5; }
+        .hub-app-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .hub-btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 8px; color: var(--text-secondary); font-family: 'Outfit', sans-serif; font-size: 0.78rem; cursor: pointer; transition: all 0.2s ease; }
+        .hub-btn:hover { border-color: var(--accent-blue); color: var(--text-primary); }
+        .hub-btn.primary { background: rgba(16,185,129,0.12); border-color: rgba(16,185,129,0.35); color: var(--accent-emerald); }
+        .hub-btn.primary:hover { background: rgba(16,185,129,0.2); }
+        .hub-btn.danger { background: rgba(244,63,94,0.1); border-color: rgba(244,63,94,0.35); color: var(--accent-rose); }
+        .hub-btn.danger:hover { background: rgba(244,63,94,0.18); }
+        .hub-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+        .hub-btn .btn-icon { font-size: 0.7rem; }
+        .hub-app-status { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 500; white-space: nowrap; flex-shrink: 0; }
+        .hub-app-status .status-dot { width: 6px; height: 6px; border-radius: 50%; }
+        .hub-app-status.running { background: rgba(16,185,129,0.12); color: var(--accent-emerald); }
+        .hub-app-status.running .status-dot { background: var(--accent-emerald); animation: pulse-dot 2s ease-in-out infinite; }
+        .hub-app-status.live { background: rgba(139,92,246,0.12); color: var(--accent-violet); }
+        .hub-app-status.live .status-dot { background: var(--accent-violet); animation: pulse-dot 2s ease-in-out infinite; }
+        .hub-app-status.stopped { background: var(--bg-elevated); color: var(--text-muted); }
+        .hub-app-status.stopped .status-dot { background: var(--text-muted); }
+        .hub-app-status.launching { background: rgba(245,158,11,0.12); color: var(--accent-amber); }
+        .hub-app-status.launching .status-dot { background: var(--accent-amber); animation: pulse-dot 0.8s ease-in-out infinite; }
+        .hub-app-status.failed { background: rgba(244,63,94,0.12); color: var(--accent-rose); }
+        .hub-app-status.failed .status-dot { background: var(--accent-rose); }
+        .hub-app-status.unknown { background: var(--bg-elevated); color: var(--text-muted); }
+        .hub-app-status.unknown .status-dot { background: var(--text-muted); }
+        .hub-iframe-wrap { margin-top: 4px; }
+        .hub-iframe-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px 12px 0 0; }
+        .hub-iframe-title { font-size: 0.88rem; font-weight: 600; }
+        .hub-iframe-url { font-size: 0.72rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .hub-iframe-actions { display: flex; gap: 8px; }
+        .hub-toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px); display: flex; align-items: center; gap: 10px; padding: 12px 20px; background: var(--bg-elevated); border: 1px solid var(--border-glow); border-radius: 12px; color: var(--text-primary); font-size: 0.85rem; opacity: 0; pointer-events: none; transition: all 0.3s ease; z-index: 9999; box-shadow: 0 12px 40px rgba(0,0,0,0.5); }
+        .hub-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .hub-toast .toast-icon { font-size: 1rem; }
+        .hub-empty { text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 0.85rem; }
+
         @media (max-width: 900px) { .main-grid { grid-template-columns: 1fr; } .stats { grid-template-columns: repeat(2, 1fr); } .projects-grid { grid-template-columns: 1fr; } }
         @media (max-width: 600px) { .container { padding: 16px; } .stats { grid-template-columns: 1fr; } header { flex-direction: column; gap: 16px; align-items: flex-start; } .nav { width: 100%; overflow-x: auto; } }
     </style>
@@ -812,13 +862,23 @@
             <div class="section">
                 <div class="section-header">
                     <div class="section-title">Dashboard Hub <span class="section-badge">live apps</span></div>
+                    <button class="hub-refresh" id="hub-refresh-btn" onclick="refreshHub()"><span class="refresh-icon">🔄</span> Refresh</button>
                 </div>
-                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px" id="hub-grid"></div>
-                <div class="section" style="margin-top:16px">
-                    <div class="section-title" style="font-size:0.9rem;margin-bottom:8px">Embedded View</div>
-                    <div id="hub-iframe-wrap" style="position:relative">
-                        <iframe id="hub-iframe" src="about:blank" style="width:100%;height:600px;border:1px solid var(--border);border-radius:12px;background:var(--bg-card);display:none" allowfullscreen></iframe>
-                        <div id="hub-iframe-note" style="padding:20px;text-align:center;color:var(--text-muted);font-size:0.85rem">Select an app to load its dashboard inline.</div>
+                <div class="hub-apps-grid" id="hub-grid"></div>
+                <div class="hub-embedded">
+                    <div class="hub-iframe-wrap">
+                        <div class="hub-iframe-header" id="hub-iframe-header" style="display:none">
+                            <div>
+                                <div class="hub-iframe-title" id="hub-iframe-title"></div>
+                                <div class="hub-iframe-url" id="hub-iframe-url"></div>
+                            </div>
+                            <div class="hub-iframe-actions">
+                                <button class="hub-btn" onclick="window.open(document.getElementById('hub-iframe').src,'_blank')"><span class="btn-icon">↗</span>Open in Tab</button>
+                                <button class="hub-btn" onclick="closeEmbeddedApp()"><span class="btn-icon">✕</span>Close</button>
+                            </div>
+                        </div>
+                        <iframe id="hub-iframe" src="about:blank" style="width:100%;height:500px;border:none;background:var(--bg-card);display:none" allowfullscreen></iframe>
+                        <div id="hub-iframe-note" style="padding:40px;text-align:center;color:var(--text-muted);font-size:0.85rem">Select an app above to load its dashboard inline.</div>
                     </div>
                 </div>
             </div>
@@ -2201,34 +2261,175 @@
         setTimeout(() => { if (notes.length) openNote(notes[0].id); }, 200);
     });
 
-    // === DASHBOARD HUB ===
+    // === DASHBOARD HUB (live apps — detect/launch via /api/apps) ===
     const hubApps = [
-        { name: "Teaching Platform", icon: "📚", desc: "Streamlit: exercise generator, flashcards, MCQ, mind maps, assessments", url: "http://localhost:8501", status: "local" },
-        { name: "Spiritual Dashboard", icon: "🕯️", desc: "Astrology + Quran practice dashboard (live)", url: "https://mahi-spiritual.netlify.app", status: "live" },
-        { name: "Academix DSS Web", icon: "📦", desc: "VBA DSS web viewer (Univer spike — when running)", url: "http://localhost:5173", status: "dev" },
-        { name: "SIS Ta'allim", icon: "🏫", desc: "Student Information System", url: "http://localhost:5000", status: "dev" }
+        { id: "teaching", name: "Teaching Platform", icon: "📚", desc: "Streamlit: exercise generator, flashcards, MCQ, mind maps, assessments", url: "http://localhost:8501", type: "local", port: 8501 },
+        { id: "spiritual", name: "Spiritual Dashboard", icon: "🕯️", desc: "Astrology + Quran practice dashboard (live)", url: "https://mahi-spiritual.netlify.app", type: "live" },
+        { id: "academix", name: "Academix DSS Web", icon: "📦", desc: "VBA DSS web viewer (Univer)", url: "http://localhost:5173", type: "local", port: 5173 },
+        { id: "sis", name: "SIS Ta'allim", icon: "🏫", desc: "Student Information System + Teaching Tools (session notes, exams, digitizer)", url: "http://localhost:5000", type: "local", port: 5000 },
+        { id: "floci", name: "Floci AWS Local", icon: "☁️", desc: "Local AWS emulator: S3, DynamoDB, Lambda — no cloud account", url: "http://localhost:4566", type: "local", port: 4566 }
     ];
-    function renderHub() {
-        const grid = document.getElementById('hub-grid');
-        grid.innerHTML = hubApps.map((a, i) => `
-            <div class="agent-chip" style="flex-direction:column;align-items:flex-start;gap:8px;padding:16px" onclick="loadHubApp(${i})">
-                <div style="display:flex;align-items:center;gap:10px;width:100%">
-                    <span style="font-size:1.3rem">${a.icon}</span>
-                    <span class="agent-name" style="font-size:0.9rem">${a.name}</span>
-                    <span class="agent-model" style="margin-left:auto">${a.status}</span>
-                </div>
-                <span style="font-size:0.75rem;color:var(--text-secondary);line-height:1.4">${a.desc}</span>
-            </div>`).join('');
+    let hubLive = {};
+
+    function hubToast(msg, icon) {
+        let t = document.getElementById('hub-toast');
+        if (!t) { t = document.createElement('div'); t.id = 'hub-toast'; t.className = 'hub-toast'; document.body.appendChild(t); }
+        t.innerHTML = '<span class="toast-icon">' + (icon || '⏳') + '</span>' + msg;
+        t.classList.add('show');
+        clearTimeout(t._h); t._h = setTimeout(function() { t.classList.remove('show'); }, 3000);
     }
-    function loadHubApp(i) {
-        const a = hubApps[i];
-        const iframe = document.getElementById('hub-iframe');
-        const note = document.getElementById('hub-iframe-note');
+
+    function hubStatusBadge(status, error) {
+        var labels = { running: 'Running', live: 'Live', stopped: 'Stopped', launching: 'Starting…', installing: 'Installing…', failed: 'Failed', unknown: 'Offline' };
+        var cls = ['running','live'].indexOf(status) >= 0 ? status : (status === 'launching' || status === 'installing') ? 'launching' : status === 'failed' ? 'failed' : status === 'stopped' ? 'stopped' : 'unknown';
+        var tip = (status === 'failed' && error) ? ' title="' + error.replace(/"/g, '&quot;') + '"' : '';
+        return '<span class="hub-app-status ' + cls + '"' + tip + '><span class="status-dot"></span>' + (labels[status] || status) + '</span>';
+    }
+
+    async function refreshHub() {
+        try {
+            var res = await fetch('/api/apps', { cache: 'no-store' });
+            if (!res.ok) throw new Error(String(res.status));
+            var data = await res.json();
+            hubLive = {};
+            (data.apps || []).forEach(function(a) { hubLive[a.id] = a; });
+        } catch (e) {
+            hubLive = {};
+            hubApps.forEach(function(a) { hubLive[a.id] = { id: a.id, running: a.type === 'live', status: a.type === 'live' ? 'live' : 'unknown' }; });
+        }
+        renderHub();
+    }
+
+    function renderHub() {
+        var grid = document.getElementById('hub-grid');
+        if (!grid) return;
+        grid.innerHTML = hubApps.map(function(a) {
+            var live = hubLive[a.id] || {};
+            var status = live.status || (a.type === 'live' ? 'live' : 'unknown');
+            var running = live.running || status === 'live';
+            var isLaunching = status === 'launching' || status === 'installing';
+            var isFailed = status === 'failed';
+            var isPlaceholder = a.placeholder && !running;
+
+            var actions = '';
+            if (isPlaceholder && !running) {
+                actions = '<button class="hub-btn" disabled style="opacity:.4;cursor:not-allowed">Awaiting Build</button>';
+            } else if (running && status !== 'live') {
+                actions = '<button class="hub-btn primary" onclick="event.stopPropagation();window.open(\'' + a.url + '\',\'_blank\')"><span class="btn-icon">↗</span>Open</button>' +
+                    '<button class="hub-btn danger" onclick="event.stopPropagation();stopHubApp(\'' + a.id + '\')"><span class="btn-icon">⏹</span>Stop</button>';
+            } else if (running && status === 'live') {
+                actions = '<button class="hub-btn primary" onclick="event.stopPropagation();window.open(\'' + a.url + '\',\'_blank\')"><span class="btn-icon">↗</span>Visit</button>';
+            } else if (isLaunching) {
+                actions = '<button class="hub-btn" disabled><span class="btn-icon">⏳</span>' + (status === 'installing' ? 'Installing…' : 'Starting…') + '</button>';
+            } else {
+                actions = '<button class="hub-btn primary" onclick="event.stopPropagation();launchHubApp(\'' + a.id + '\')"><span class="btn-icon">▶</span>Launch</button>';
+            }
+
+            if (isFailed || status === 'stopped') {
+                actions += ' <button class="hub-btn" onclick="event.stopPropagation();showHubLog(\'' + a.id + '\')"><span class="btn-icon">📋</span>Log</button>';
+            }
+
+            var clickAttr = (!isPlaceholder && !isLaunching) ? ' onclick="loadHubApp(\'' + a.id + '\')"' : '';
+
+            return '<div class="hub-app-card"' + clickAttr + '>' +
+                '<div class="hub-app-header">' +
+                    '<div class="hub-app-icon ' + a.id + '">' + a.icon + '</div>' +
+                    '<div class="hub-app-info">' +
+                        '<div class="hub-app-name">' + a.name + '</div>' +
+                        '<div class="hub-app-type">' + a.type + (a.port ? ' · port ' + a.port : '') + '</div>' +
+                    '</div>' +
+                    hubStatusBadge(status, live.error) +
+                '</div>' +
+                '<div class="hub-app-desc">' + a.desc + '</div>' +
+                '<div class="hub-app-actions">' + actions + '</div>' +
+            '</div>';
+        }).join('');
+    }
+
+    function loadHubApp(id) {
+        var a = hubApps.find(function(x) { return x.id === id; });
+        if (!a) return;
+        if (a.type === 'live') { window.open(a.url, '_blank'); return; }
+        var iframe = document.getElementById('hub-iframe');
+        var note = document.getElementById('hub-iframe-note');
+        var header = document.getElementById('hub-iframe-header');
+        var titleEl = document.getElementById('hub-iframe-title');
+        var urlEl = document.getElementById('hub-iframe-url');
+        titleEl.textContent = a.icon + ' ' + a.name;
+        urlEl.textContent = a.url;
+        header.style.display = 'flex';
         iframe.src = a.url;
         iframe.style.display = 'block';
         note.style.display = 'none';
     }
+
+    async function launchHubApp(id) {
+        var a = hubApps.find(function(x) { return x.id === id; });
+        if (!a) return;
+        hubToast('Launching ' + a.name + '…', '🚀');
+        try {
+            var res = await fetch('/api/apps/' + id + '/launch', { method: 'POST' });
+            if (!res.ok) throw new Error(String(res.status));
+            pollHub(id);
+        } catch (e) {
+            hubToast('Hub server not reachable — start with python dashboard_hub.py', '⚠️');
+        }
+    }
+
+    async function stopHubApp(id) {
+        var a = hubApps.find(function(x) { return x.id === id; });
+        if (!a) return;
+        hubToast('Stopping ' + a.name + '…', '⏹');
+        try {
+            var res = await fetch('/api/apps/' + id + '/stop', { method: 'POST' });
+            if (!res.ok) throw new Error(String(res.status));
+            await refreshHub();
+            hubToast(a.name + ' stopped', '✅');
+        } catch (e) {
+            hubToast('Failed to stop app', '❌');
+        }
+    }
+
+    function pollHub(id) {
+        var n = 0;
+        var timer = setInterval(async function() {
+            n++;
+            await refreshHub();
+            var st = (hubLive[id] || {}).status;
+            if (st === 'running' || st === 'live') {
+                clearInterval(timer); hubToast('App is running!', '✅'); loadHubApp(id);
+            } else if (st === 'failed' || n >= 45) {
+                clearInterval(timer);
+                hubToast(st === 'failed' ? 'Launch failed — check log.' : 'App did not come up — check log.', '❌');
+            }
+        }, 2000);
+    }
+
+    async function showHubLog(id) {
+        try {
+            var res = await fetch('/api/logs/' + id);
+            var data = await res.json();
+            var tail = (data.log || 'No log yet.').slice(-3000);
+            var win = window.open('', '_blank');
+            win.document.write('<!DOCTYPE html><html><head><title>Hub Log — ' + id + '</title><style>body{font:12px/1.5 "JetBrains Mono",monospace;white-space:pre-wrap;padding:16px;background:#0e1219;color:#e8ecf4;margin:0}.header{font:13px "Outfit",sans-serif;padding:12px 16px;background:#161c28;border-bottom:1px solid #1e2736;color:#7a8599}</style></head><body><div class="header">📋 Log: ' + id + '</div><pre>' + tail.replace(/</g, '&lt;') + '</pre></body></html>');
+        } catch (e) {
+            hubToast('Hub server not reachable.', '⚠️');
+        }
+    }
+
+    function closeEmbeddedApp() {
+        var iframe = document.getElementById('hub-iframe');
+        var note = document.getElementById('hub-iframe-note');
+        var header = document.getElementById('hub-iframe-header');
+        iframe.src = 'about:blank';
+        iframe.style.display = 'none';
+        note.style.display = 'block';
+        header.style.display = 'none';
+    }
+
     renderHub();
+    refreshHub();
+    setInterval(refreshHub, 15000);
     </script>
 </body>
 </html>

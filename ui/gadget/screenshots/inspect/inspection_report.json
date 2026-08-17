@@ -1,0 +1,151 @@
+{
+  "apps": {
+    "overview_stats": 8,
+    "tabs": [
+      "Overview",
+      "Graph",
+      "Journal",
+      "Notes",
+      "Tags",
+      "Inbox",
+      "Bookmarks",
+      "Recent",
+      "History",
+      "Templates",
+      "Training",
+      "Agents",
+      "Agent Control",
+      "Autopilots",
+      "Goals",
+      "Skills",
+      "Projects",
+      "Academix",
+      "Dashboard Hub"
+    ],
+    "overview": {
+      "visited": true,
+      ".stat": 8
+    },
+    "graph": {
+      "visited": true,
+      "canvas": 1,
+      "count": 1
+    },
+    "journal": {
+      "visited": true,
+      ".journal-entry": 5
+    },
+    "notes": {
+      "visited": true,
+      "#notes-list .recent-item": 19
+    },
+    "tags": {
+      "visited": true,
+      ".tag-pill": 47
+    },
+    "inbox": {
+      "visited": true,
+      ".inbox-item": 5
+    },
+    "bookmarks": {
+      "visited": true,
+      "#bookmarks-list .recent-item": 5
+    },
+    "recent": {
+      "visited": true,
+      "#recent-list .recent-item": 19
+    },
+    "history": {
+      "visited": true,
+      ".version-item": 8
+    },
+    "templates": {
+      "visited": true,
+      ".template-card": 8
+    },
+    "training": {
+      "visited": true,
+      "#training-list .project-card": 0
+    },
+    "agents": {
+      "visited": true,
+      "#agents-grid-full .project-card": 8
+    },
+    "agent_control": {
+      "visited": true,
+      ".agent-control-card": 10,
+      ".squad-group": 6
+    },
+    "autopilots": {
+      "visited": true,
+      ".autopilot-card": 3,
+      ".toggle-switch input": 3
+    },
+    "goals": {
+      "visited": true,
+      ".goal-card": 5,
+      ".goal-task": 29
+    },
+    "skills": {
+      "visited": true,
+      "#skills-grid .project-card": 12
+    },
+    "projects": {
+      "visited": true,
+      ".project-card": 10
+    },
+    "academix": {
+      "visited": true,
+      "iframe": 1
+    }
+  },
+  "hub": {
+    "card_count": 5,
+    "badge_colors": {
+      "stopped": "rgb(22, 28, 40)",
+      "live": "rgba(139, 92, 246, 0.12)"
+    },
+    "log_modal": false,
+    "iframe_embed": true,
+    "api": [
+      [
+        "teaching",
+        "stopped"
+      ],
+      [
+        "spiritual",
+        "live"
+      ],
+      [
+        "academix",
+        "stopped"
+      ],
+      [
+        "sis",
+        "stopped"
+      ],
+      [
+        "floci",
+        "stopped"
+      ]
+    ]
+  },
+  "interactive": {
+    "search_dimmed": 137,
+    "quick_capture": true,
+    "shortcut_inbox": true,
+    "shortcut_journal": true
+  },
+  "responsive": {
+    "mobile": {
+      "nav_visible": true
+    },
+    "tablet": {
+      "nav_visible": true
+    }
+  },
+  "errors": {
+    "console": [],
+    "page": []
+  }
+}

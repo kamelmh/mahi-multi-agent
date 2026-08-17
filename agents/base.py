@@ -93,6 +93,7 @@ class BaseAgent(ABC):
         self.active_tasks: dict[str, Task] = {}
         self.completed_tasks: list[Task] = []
         self._load_system_prompt()
+        self._hooks = self._load_hooks()
 
     @property
     def id(self) -> str:
@@ -111,12 +112,48 @@ class BaseAgent(ABC):
         if not self.config.system_prompt:
             self.config.system_prompt = self._default_system_prompt()
 
+    def _load_hooks(self):
+        """Load and register lifecycle hooks."""
+        try:
+            from hooks import HookManager, register_defaults
+            hooks = HookManager()
+            register_defaults(hooks)
+            return hooks
+        except ImportError:
+            return None
+
     def _default_system_prompt(self) -> str:
         return (
             f"You are {self.config.name}, a specialized AI assistant.\n"
             f"Purpose: {self.config.description}\n"
             f"Be concise, accurate, and helpful."
         )
+
+    def _tool_registry(self):
+        """Lazy import of the shared ToolRegistry (avoids circular imports at module load)."""
+        from tools.registry import ToolRegistry
+        return ToolRegistry()
+
+    def _try_use_tools(self, task_text: str) -> str | None:
+        """Detect tool intent from task text, invoke the tool, and return formatted context."""
+        try:
+            reg = self._tool_registry()
+            intents = reg.detect_intent(task_text)
+            if not intents:
+                return None
+            parts = []
+            for name, kwargs in intents:
+                if self._hooks:
+                    self._hooks.fire("before_tool", tool_name=name, kwargs=kwargs)
+                result = reg.run_tool(name, **kwargs)
+                if self._hooks:
+                    self._hooks.fire("after_tool", tool_name=name, kwargs=kwargs, result=result)
+                parts.append(f"### {name} result:\n```\n{json.dumps(result, ensure_ascii=False, indent=2)[:3000]}\n```")
+            if not parts:
+                return None
+            return "\n\n".join(parts)
+        except Exception:
+            return None
 
     def _build_context(self, task: Task) -> list[dict]:
         """Build message list for API call."""
@@ -133,6 +170,24 @@ class BaseAgent(ABC):
                 messages.append({"role": "system", "content": ctx})
             except Exception:
                 pass
+
+        # Inject relevant skills into context
+        try:
+            from tools.skill_loader import load_relevant_skills
+            skill_context = load_relevant_skills(task.user_input)
+            if skill_context:
+                messages.append(
+                    {"role": "system", "content": f"Relevant skills (apply these patterns):\n{skill_context}"}
+                )
+        except ImportError:
+            pass
+
+        # Inject tool results if the task asks for them
+        tool_context = self._try_use_tools(task.user_input)
+        if tool_context:
+            messages.append(
+                {"role": "system", "content": f"Tool results (use them to answer):\n{tool_context}"}
+            )
 
         messages.append({"role": "user", "content": task.user_input})
         return messages
@@ -208,6 +263,43 @@ class BaseAgent(ABC):
         else:
             return providers["openrouter"]  # Default to OpenRouter
 
+    def _storage(self):
+        """Lazy import of Floci storage (avoids circular imports)."""
+        from floci_integration import get_storage
+        return get_storage()
+
+    def _save_output(self, task_id: str, output: str) -> dict:
+        """Save agent output to S3 (or local fallback)."""
+        try:
+            storage = self._storage()
+            return storage.save_agent_output(self.id, task_id, output)
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def _load_output(self, task_id: str) -> Optional[dict]:
+        """Load agent output from S3 (or local fallback)."""
+        try:
+            storage = self._storage()
+            return storage.load_agent_output(self.id, task_id)
+        except Exception:
+            return None
+
+    def _save_session(self, session_id: str, data: dict) -> dict:
+        """Save session data to DynamoDB (or local fallback)."""
+        try:
+            storage = self._storage()
+            return storage.sessions.save(session_id, data)
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def _load_session(self, session_id: str) -> Optional[dict]:
+        """Load session data from DynamoDB (or local fallback)."""
+        try:
+            storage = self._storage()
+            return storage.sessions.load(session_id)
+        except Exception:
+            return None
+
     @abstractmethod
     def execute(self, task: Task) -> str:
         """Execute a task and return the result. Must be implemented by subclasses."""
@@ -220,6 +312,9 @@ class BaseAgent(ABC):
         self.state = AgentState.RUNNING
         self.active_tasks[task.id] = task
 
+        if self._hooks:
+            self._hooks.fire("before_task", task=task, agent=self)
+
         try:
             result = self.execute(task)
             task.complete(result)
@@ -229,6 +324,9 @@ class BaseAgent(ABC):
             self.active_tasks.pop(task.id, None)
             self.completed_tasks.append(task)
             self.state = AgentState.IDLE
+
+        if self._hooks:
+            self._hooks.fire("after_task", task=task, agent=self)
 
         return task
 

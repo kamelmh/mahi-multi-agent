@@ -7,6 +7,7 @@ Replaces: automation/command-center/, automation/session-intelligence/, automati
 import json
 import sys
 import os
+import shutil
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
@@ -21,6 +22,34 @@ WORKSPACE = Path(r"C:\Users\Admin\My Drive\LifeWorkspace")
 SESSION_ARCHIVE = WORKSPACE / "15_Advanced_Tools" / "sessions"
 SESSION_STATE = WORKSPACE / ".session-state.json"
 CONTEXT_ENGINE = WORKSPACE / "15_Advanced_Tools" / "context-engine"
+
+# ── Hound (keyless web search) ──────────────────────────────────────────
+HOUND_BIN = None
+_hound_exe_paths = [
+    r"C:\Users\Admin\AppData\Local\Python\pythoncore-3.14-64\Scripts\hound.exe",
+    shutil.which("hound"),
+]
+for p in _hound_exe_paths:
+    if p and os.path.isfile(p):
+        HOUND_BIN = p
+        break
+
+
+def _hound_available() -> bool:
+    return HOUND_BIN is not None
+
+
+def _hound_version() -> str:
+    if HOUND_BIN:
+        try:
+            out = subprocess.run([HOUND_BIN, "-v"], capture_output=True, text=True, timeout=10)
+            # hound -v prints "Hound v13.1.2 (keyless)" or similar
+            for line in out.stdout.splitlines():
+                if "Hound" in line:
+                    return line.strip()
+        except Exception:
+            pass
+    return "unknown"
 
 
 class SessionIntelligence:
@@ -235,6 +264,8 @@ class CommandCenter:
             "skills": WORKSPACE / "02_Skills_&_Development",
             "career": WORKSPACE / "03_Career_&_Planning",
         }
+        self._hound_available = _hound_available()
+        self._hound_version = _hound_version()
 
     def briefing(self) -> str:
         lines = [
@@ -254,6 +285,7 @@ class CommandCenter:
         analysis = self.session_intel.analyze_patterns()
         lines.append(f"Active project: {analysis.get('active_project', 'Unknown')}")
         lines.append(f"Session count: {analysis.get('session_count', 0)}")
+        lines.append(f"Hound web search: {'available' if self._hound_available else 'missing'}")
         lines.append("")
         actions = analysis.get("next_actions", [])[:3]
         if actions:
@@ -274,6 +306,11 @@ class CommandCenter:
                 }
             else:
                 result["systems"][name] = {"status": "missing"}
+        # Hound web search health
+        result["systems"]["web"] = {
+            "hound_available": self._hound_available,
+            "hound_version": self._hound_version,
+        }
         return result
 
     def session(self, cmd: str = "summary") -> str:
@@ -327,13 +364,42 @@ class CommandCenter:
             return self.session(args[0] if args else "summary")
         elif command == "vault":
             return self.vault(args[0] if args else "vault", *args[1:])
+        elif command == "web":
+            subcmd = args[0] if args else "status"
+            if subcmd == "status":
+                return json.dumps({"hound_available": self._hound_available, "hound_version": self._hound_version}, indent=2)
+            elif subcmd == "search" and len(args) > 1:
+                query = args[1]
+                # Simple web search via hound one-shot if binary available
+                if HOUND_BIN:
+                    try:
+                        import subprocess
+                        out = subprocess.run(
+                            [HOUND_BIN, "--http"], capture_output=True, text=True, timeout=30
+                        )  # just verify hound alive
+                        # For actual search we delegate to mcp-hound.py CLI
+                        mcp_script = MAHI_ROOT / "mcp-hound.py"
+                        if mcp_script.exists():
+                            r = subprocess.run(
+                                [sys.executable, str(mcp_script), "search", query],
+                                capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=60
+                            )
+                            if r.returncode == 0:
+                                return r.stdout[:2000]
+                        # fallback: just return info
+                        return f"Web search query: {query} (hound binary at {HOUND_BIN})"
+                    except Exception as e:
+                        return f"Web search error: {e}"
+                return f"Hound not available; query: {query}"
+            return f"Unknown web subcommand: {subcmd}. Use: web status, web search <query>"
         else:
             return (
                 "Commands:\n"
                 "  briefing              — Daily briefing\n"
                 "  status                — System status\n"
                 "  session [summary|next|context] — Session intelligence\n"
-                "  vault [search|read|list|moc|vault] — Obsidian vault"
+                "  vault [search|read|list|moc|vault] — Obsidian vault\n"
+                "  web [status|search <query>] — Web search / health"
             )
 
 

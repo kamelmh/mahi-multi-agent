@@ -1,0 +1,15 @@
+{
+  "score": 60.0,
+  "checks": {
+    "input_validation": true,
+    "secrets_in_env": true,
+    "auth_required": true,
+    "rate_limiting": false,
+    "cors_configured": false
+  },
+  "recommendations": [
+    "Add rate limiting with flask-limiter",
+    "Configure CORS with flask-cors",
+    "Add input validation with marshmallow"
+  ]
+}

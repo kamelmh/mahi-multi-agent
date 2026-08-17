@@ -1,0 +1,252 @@
+[21:51:40] === launch Teaching Platform ===
+[21:51:41] started pid=11712: python -m streamlit run app.py --server.port 8501 --server.headless true --server.address 127.0.0.1
+2026-08-14 21:51:43.812 Uvicorn server started on 127.0.0.1:8501
+
+  You can now view your Streamlit app in your browser.
+
+  URL: http://127.0.0.1:8501
+
+[02:01:39] === launch Teaching Platform ===
+[02:01:41] started pid=9772: C:\Users\Admin\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\python.exe -m streamlit run app.py --server.port 8501 --server.headless true --server.address 127.0.0.1
+2026-08-16 02:01:42.910 Uvicorn server started on 127.0.0.1:8501
+
+  You can now view your Streamlit app in your browser.
+
+  URL: http://127.0.0.1:8501
+
++------------------------- Traceback (most recent call last) --------------------------+
+| C:\Users\Admin\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\site-p |
+| ackages\streamlit\runtime\scriptrunner\exec_code.py:129 in                           |
+| exec_func_with_error_handling                                                        |
+|                                                                                      |
+| C:\Users\Admin\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\site-p |
+| ackages\streamlit\runtime\scriptrunner\script_runner.py:807 in code_to_exec          |
+|                                                                                      |
+| C:\Users\Admin\projects\active\apps\lifeworkspace-teaching-platform\app.py:23 in     |
+| <module>                                                                             |
+|                                                                                      |
+|    20 import sys                                                                     |
+|    21 from datetime import datetime                                                  |
+|    22                                                                                |
+| >  23 from taallim.exercise_generator import ExerciseGenerator, EXERCISE_TYPES, to_h |
+|    24 from taallim.topics import get_topics_by_level, get_topic_by_id, LEVELS        |
+|    25 from taallim.flashcard_system import FlashcardDeck, SpacedRepetition, Quality  |
+|    26 from taallim.mcq_generator import MCQGenerator                                 |
++--------------------------------------------------------------------------------------+
+ModuleNotFoundError: No module named 'taallim'
++------------------------- Traceback (most recent call last) --------------------------+
+| C:\Users\Admin\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\site-p |
+| ackages\streamlit\runtime\scriptrunner\exec_code.py:129 in                           |
+| exec_func_with_error_handling                                                        |
+|                                                                                      |
+| C:\Users\Admin\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\site-p |
+| ackages\streamlit\runtime\scriptrunner\script_runner.py:807 in code_to_exec          |
+|                                                                                      |
+| C:\Users\Admin\projects\active\apps\lifeworkspace-teaching-platform\app.py:23 in     |
+| <module>                                                                             |
+|                                                                                      |
+|    20 import sys                                                                     |
+|    21 from datetime import datetime                                                  |
+|    22                                                                                |
+| >  23 from taallim.exercise_generator import ExerciseGenerator, EXERCISE_TYPES, to_h |
+|    24 from taallim.topics import get_topics_by_level, get_topic_by_id, LEVELS        |
+|    25 from taallim.flashcard_system import FlashcardDeck, SpacedRepetition, Quality  |
+|    26 from taallim.mcq_generator import MCQGenerator                                 |
++--------------------------------------------------------------------------------------+
+ModuleNotFoundError: No module named 'taallim'
+[02:07:51] === launch Teaching Platform ===
+[02:07:52] started pid=16564: C:\Users\Admin\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\python.exe -m streamlit run app.py --server.port 8501 --server.headless true --server.address 127.0.0.1
+2026-08-16 02:07:54.029 Uvicorn server started on 127.0.0.1:8501
+
+  You can now view your Streamlit app in your browser.
+
+  URL: http://127.0.0.1:8501
+
++------------------------- Traceback (most recent call last) --------------------------+
+| C:\Users\Admin\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\site-p |
+| ackages\streamlit\runtime\scriptrunner\exec_code.py:129 in                           |
+| exec_func_with_error_handling                                                        |
+|                                                                                      |
+| C:\Users\Admin\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\site-p |
+| ackages\streamlit\runtime\scriptrunner\script_runner.py:807 in code_to_exec          |
+|                                                                                      |
+| C:\Users\Admin\projects\active\apps\lifeworkspace-teaching-platform\app.py:23 in     |
+| <module>                                                                             |
+|                                                                                      |
+|    20 import sys                                                                     |
+|    21 from datetime import datetime                                                  |
+|    22                                                                                |
+| >  23 from taallim.exercise_generator import ExerciseGenerator, EXERCISE_TYPES, to_h |
+|    24 from taallim.topics import get_topics_by_level, get_topic_by_id, LEVELS        |
+|    25 from taallim.flashcard_system import FlashcardDeck, SpacedRepetition, Quality  |
+|    26 from taallim.mcq_generator import MCQGenerator                                 |
++--------------------------------------------------------------------------------------+
+ModuleNotFoundError: No module named 'taallim'
++------------------------- Traceback (most recent call last) --------------------------+
+| C:\Users\Admin\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\site-p |
+| ackages\streamlit\runtime\scriptrunner\exec_code.py:129 in                           |
+| exec_func_with_error_handling                                                        |
+|                                                                                      |
+| C:\Users\Admin\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\site-p |
+| ackages\streamlit\runtime\scriptrunner\script_runner.py:807 in code_to_exec          |
+|                                                                                      |
+| C:\Users\Admin\projects\active\apps\lifeworkspace-teaching-platform\app.py:23 in     |
+| <module>                                                                             |
+|                                                                                      |
+|    20 import sys                                                                     |
+|    21 from datetime import datetime                                                  |
+|    22                                                                                |
+| >  23 from taallim.exercise_generator import ExerciseGenerator, EXERCISE_TYPES, to_h |
+|    24 from taallim.topics import get_topics_by_level, get_topic_by_id, LEVELS        |
+|    25 from taallim.flashcard_system import FlashcardDeck, SpacedRepetition, Quality  |
+|    26 from taallim.mcq_generator import MCQGenerator                                 |
++--------------------------------------------------------------------------------------+
+ModuleNotFoundError: No module named 'taallim'
++------------------------- Traceback (most recent call last) --------------------------+
+| C:\Users\Admin\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\site-p |
+| ackages\streamlit\runtime\scriptrunner\exec_code.py:129 in                           |
+| exec_func_with_error_handling                                                        |
+|                                                                                      |
+| C:\Users\Admin\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\site-p |
+| ackages\streamlit\runtime\scriptrunner\script_runner.py:807 in code_to_exec          |
+|                                                                                      |
+| C:\Users\Admin\projects\active\apps\lifeworkspace-teaching-platform\app.py:23 in     |
+| <module>                                                                             |
+|                                                                                      |
+|    20 import sys                                                                     |
+|    21 from datetime import datetime                                                  |
+|    22                                                                                |
+| >  23 from taallim.exercise_generator import ExerciseGenerator, EXERCISE_TYPES, to_h |
+|    24 from taallim.topics import get_topics_by_level, get_topic_by_id, LEVELS        |
+|    25 from taallim.flashcard_system import FlashcardDeck, SpacedRepetition, Quality  |
+|    26 from taallim.mcq_generator import MCQGenerator                                 |
++--------------------------------------------------------------------------------------+
+ModuleNotFoundError: No module named 'taallim'
++------------------------- Traceback (most recent call last) --------------------------+
+| C:\Users\Admin\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\site-p |
+| ackages\streamlit\runtime\scriptrunner\exec_code.py:129 in                           |
+| exec_func_with_error_handling                                                        |
+|                                                                                      |
+| C:\Users\Admin\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\site-p |
+| ackages\streamlit\runtime\scriptrunner\script_runner.py:807 in code_to_exec          |
+|                                                                                      |
+| C:\Users\Admin\projects\active\apps\lifeworkspace-teaching-platform\app.py:23 in     |
+| <module>                                                                             |
+|                                                                                      |
+|    20 import sys                                                                     |
+|    21 from datetime import datetime                                                  |
+|    22                                                                                |
+| >  23 from taallim.exercise_generator import ExerciseGenerator, EXERCISE_TYPES, to_h |
+|    24 from taallim.topics import get_topics_by_level, get_topic_by_id, LEVELS        |
+|    25 from taallim.flashcard_system import FlashcardDeck, SpacedRepetition, Quality  |
+|    26 from taallim.mcq_generator import MCQGenerator                                 |
++--------------------------------------------------------------------------------------+
+ModuleNotFoundError: No module named 'taallim'
++------------------------- Traceback (most recent call last) --------------------------+
+| C:\Users\Admin\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\site-p |
+| ackages\streamlit\runtime\scriptrunner\exec_code.py:129 in                           |
+| exec_func_with_error_handling                                                        |
+|                                                                                      |
+| C:\Users\Admin\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\site-p |
+| ackages\streamlit\runtime\scriptrunner\script_runner.py:807 in code_to_exec          |
+|                                                                                      |
+| C:\Users\Admin\projects\active\apps\lifeworkspace-teaching-platform\app.py:23 in     |
+| <module>                                                                             |
+|                                                                                      |
+|    20 import sys                                                                     |
+|    21 from datetime import datetime                                                  |
+|    22                                                                                |
+| >  23 from taallim.exercise_generator import ExerciseGenerator, EXERCISE_TYPES, to_h |
+|    24 from taallim.topics import get_topics_by_level, get_topic_by_id, LEVELS        |
+|    25 from taallim.flashcard_system import FlashcardDeck, SpacedRepetition, Quality  |
+|    26 from taallim.mcq_generator import MCQGenerator                                 |
++--------------------------------------------------------------------------------------+
+ModuleNotFoundError: No module named 'taallim'
+[10:18:10] === launch Teaching Platform ===
+[10:18:11] started pid=13060: C:\Users\Admin\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\python.exe -m streamlit run app.py --server.port 8501 --server.headless true --server.address 127.0.0.1
+2026-08-16 10:18:12.737 Uvicorn server started on 127.0.0.1:8501
+
+  You can now view your Streamlit app in your browser.
+
+  URL: http://127.0.0.1:8501
+
++------------------------- Traceback (most recent call last) --------------------------+
+| C:\Users\Admin\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\site-p |
+| ackages\streamlit\runtime\scriptrunner\exec_code.py:129 in                           |
+| exec_func_with_error_handling                                                        |
+|                                                                                      |
+| C:\Users\Admin\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\site-p |
+| ackages\streamlit\runtime\scriptrunner\script_runner.py:807 in code_to_exec          |
+|                                                                                      |
+| C:\Users\Admin\projects\active\apps\lifeworkspace-teaching-platform\app.py:23 in     |
+| <module>                                                                             |
+|                                                                                      |
+|    20 import sys                                                                     |
+|    21 from datetime import datetime                                                  |
+|    22                                                                                |
+| >  23 from taallim.exercise_generator import ExerciseGenerator, EXERCISE_TYPES, to_h |
+|    24 from taallim.topics import get_topics_by_level, get_topic_by_id, LEVELS        |
+|    25 from taallim.flashcard_system import FlashcardDeck, SpacedRepetition, Quality  |
+|    26 from taallim.mcq_generator import MCQGenerator                                 |
++--------------------------------------------------------------------------------------+
+ModuleNotFoundError: No module named 'taallim'
++------------------------- Traceback (most recent call last) --------------------------+
+| C:\Users\Admin\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\site-p |
+| ackages\streamlit\runtime\scriptrunner\exec_code.py:129 in                           |
+| exec_func_with_error_handling                                                        |
+|                                                                                      |
+| C:\Users\Admin\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\site-p |
+| ackages\streamlit\runtime\scriptrunner\script_runner.py:807 in code_to_exec          |
+|                                                                                      |
+| C:\Users\Admin\projects\active\apps\lifeworkspace-teaching-platform\app.py:23 in     |
+| <module>                                                                             |
+|                                                                                      |
+|    20 import sys                                                                     |
+|    21 from datetime import datetime                                                  |
+|    22                                                                                |
+| >  23 from taallim.exercise_generator import ExerciseGenerator, EXERCISE_TYPES, to_h |
+|    24 from taallim.topics import get_topics_by_level, get_topic_by_id, LEVELS        |
+|    25 from taallim.flashcard_system import FlashcardDeck, SpacedRepetition, Quality  |
+|    26 from taallim.mcq_generator import MCQGenerator                                 |
++--------------------------------------------------------------------------------------+
+ModuleNotFoundError: No module named 'taallim'
++------------------------- Traceback (most recent call last) --------------------------+
+| C:\Users\Admin\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\site-p |
+| ackages\streamlit\runtime\scriptrunner\exec_code.py:129 in                           |
+| exec_func_with_error_handling                                                        |
+|                                                                                      |
+| C:\Users\Admin\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\site-p |
+| ackages\streamlit\runtime\scriptrunner\script_runner.py:807 in code_to_exec          |
+|                                                                                      |
+| C:\Users\Admin\projects\active\apps\lifeworkspace-teaching-platform\app.py:23 in     |
+| <module>                                                                             |
+|                                                                                      |
+|    20 import sys                                                                     |
+|    21 from datetime import datetime                                                  |
+|    22                                                                                |
+| >  23 from taallim.exercise_generator import ExerciseGenerator, EXERCISE_TYPES, to_h |
+|    24 from taallim.topics import get_topics_by_level, get_topic_by_id, LEVELS        |
+|    25 from taallim.flashcard_system import FlashcardDeck, SpacedRepetition, Quality  |
+|    26 from taallim.mcq_generator import MCQGenerator                                 |
++--------------------------------------------------------------------------------------+
+ModuleNotFoundError: No module named 'taallim'
++------------------------- Traceback (most recent call last) --------------------------+
+| C:\Users\Admin\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\site-p |
+| ackages\streamlit\runtime\scriptrunner\exec_code.py:129 in                           |
+| exec_func_with_error_handling                                                        |
+|                                                                                      |
+| C:\Users\Admin\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\site-p |
+| ackages\streamlit\runtime\scriptrunner\script_runner.py:807 in code_to_exec          |
+|                                                                                      |
+| C:\Users\Admin\projects\active\apps\lifeworkspace-teaching-platform\app.py:23 in     |
+| <module>                                                                             |
+|                                                                                      |
+|    20 import sys                                                                     |
+|    21 from datetime import datetime                                                  |
+|    22                                                                                |
+| >  23 from taallim.exercise_generator import ExerciseGenerator, EXERCISE_TYPES, to_h |
+|    24 from taallim.topics import get_topics_by_level, get_topic_by_id, LEVELS        |
+|    25 from taallim.flashcard_system import FlashcardDeck, SpacedRepetition, Quality  |
+|    26 from taallim.mcq_generator import MCQGenerator                                 |
++--------------------------------------------------------------------------------------+
+ModuleNotFoundError: No module named 'taallim'

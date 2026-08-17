@@ -1,0 +1,15 @@
+[21:52:05] === launch Academix DSS Web ===
+[21:52:05] launch error: [WinError 2] The system cannot find the file specified
+[21:52:40] === launch Academix DSS Web ===
+[21:52:40] launch error: [WinError 2] The system cannot find the file specified
+[21:53:04] === launch Academix DSS Web ===
+[21:53:04] launch error: [WinError 2] The system cannot find the file specified
+[21:53:27] === launch Academix DSS Web ===
+[21:53:27] started pid=3696: C:\Program Files\nodejs\npm.CMD run dev
+[21:54:39] process exited rc=1
+[21:54:42] === launch Academix DSS Web ===
+[21:54:42] started pid=3076: cmd /c npm run dev
+[21:56:01] process exited rc=1
+[21:56:14] === launch Academix DSS Web ===
+[21:56:14] started pid=14644: C:\Windows\System32\cmd.exe /c npm run dev
+[21:57:45] app did not open its port within 90s

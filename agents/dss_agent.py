@@ -11,7 +11,7 @@ def create_dss_agent() -> BaseAgent:
         model_fallback="openai/gpt-oss-20b:free",
         provider="openrouter",
         capabilities=["vba development", "excel automation", "data analysis", "erp systems"],
-        tools=["file_read", "file_write", "terminal", "excel"],
+        tools=["file_read", "file_write", "terminal", "excel", "file_search"],
         max_concurrent=1,
         timeout=180,
     )

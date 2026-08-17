@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Vibe Task Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg-dark:#0f172a;
+--bg-card:#1e293b;
+--bg-card-hover:#334155;
+--text-primary:#f8fafc;
+--text-muted:#94a3b8;
+--accent:#3b82f6;
+--accent-hover:#2563eb;
+--success:#10b981;
+--danger:#ef4444;
+--warning:#f59e0b;
+--border:#374151;
+--radius:0.5rem;
+--transition:0.2s ease;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+font-family:'Outfit',sans-serif;
+background:var(--bg-dark);
+color:var(--text-primary);
+line-height:1.6;
+}
+a{color:var(--accent);text-decoration:none}
+a:hover{color:var(--accent-hover)}
+button{
+font-family:inherit;
+cursor:pointer;
+border:none;
+border-radius:var(--radius);
+transition:var(--transition);
+}
+.container{max-width:1200px;margin:0 auto;padding:1rem}
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:1rem 0;
+border-bottom:1px solid var(--border);
+}
+.logo{font-size:1.5rem;font-weight:600}
+.nav{
+display:flex;
+gap:1.5rem;
+}
+.nav a{color:var(--text-muted)}
+.nav a.active,.nav a:hover{color:var(--text-primary)}
+.sidebar{
+width:260px;
+background:var(--bg-card);
+border-radius:var(--radius);
+padding:1.5rem;
+}
+.sidebar h2{margin-bottom:1rem}
+.sidebar nav{display:flex;flex-direction:column;gap:0.5rem}
+.sidebar nav button{
+text-align:left;
+width:100%;
+padding:0.5rem;
+background:transparent;
+color:var(--text-muted);
+}
+.sidebar nav button.active,.sidebar nav button:hover{
+background:var(--accent);
+color:#fff;
+}
+.main{flex:1;margin-left:1.5rem}
+.stats-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:1rem;
+margin-bottom:2rem;
+}
+.stat-card{
+background:var(--bg-card);
+border-radius:var(--radius);
+padding:1.5rem;
+text-align:center;
+}
+.stat-card h3{font-size:0.9rem;color:var(--text-muted);margin-bottom:0.5rem}
+.stat-card .value{font-size:2rem;font-weight:600}
+.stat-card.delta-up{color:var(--success)}
+.stat-card.delta-down{color:var(--danger)}
+.chart-container{height:200px;background:var(--bg-card);border-radius:var(--radius);margin-bottom:2rem;position:relative}
+.upcoming-tasks{background:var(--bg-card);border-radius:var(--radius);padding:1.5rem}
+.upcoming-tasks h2{margin-bottom:1rem}
+.task-item{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:0.75rem 0;
+border-bottom:1px solid var(--border);
+}
+.task-item:last-child{border-bottom:none}
+.task-info{flex:1}
+.task-title{font-weight:600}
+.task-due{font-size:0.85rem;color:var(--text-muted)}
+.task-actions{display:flex;gap:0.5rem}
+.btn{
+padding:0.5rem 1rem;
+font-size:0.875rem;
+}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-hover)}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-danger:hover{background:#dc2626}
+.btn-secondary{background:var(--border);color:var(--text-primary)}
+.btn-secondary:hover{background:#4b5563}
+input,select,textarea{
+width:100%;
+padding:0.75rem;
+border:1px solid var(--border);
+border-radius:var(--radius);
+background:var(--bg-card);
+color:var(--text-primary);
+margin-top:0.25rem;
+}
+input:focus,select:focus,textarea:focus{
+outline:none;
+border-color:var(--accent);
+}
+.form-group{margin-bottom:1rem}
+.modal-overlay{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.5);
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:1000;
+}
+.modal{
+background:var(--bg-card);
+border-radius:var(--radius);
+padding:2rem;
+width:90%;
+max-width:400px;
+}
+.modal h2{margin-bottom:1.5rem}
+.toggle-theme{background:var(--border);color:var(--text-primary);padding:0.5rem 1rem;border-radius:var(--radius)}
+.toggle-theme:hover{background:#4b5563}
+@media(max-width:768px){
+.sidebar{width:100%;margin-bottom:1.5rem}
+.main{margin-left:0}
+}
+</style>
+</head>
+<body>
+<div id="app">
+<!-- Landing Page -->
+<section id="landing" class="container">
+<header class="header">
+<div class="logo">Vibe</div>
+<nav class="nav">
+<a href="#login" class="nav-link active">Log In</a>
+<a href="#register" class="nav-link">Sign Up</a>
+</nav>
+</header>
+<main style="text-align:center;margin-top:3rem">
+<h1 style="font-size:2.5rem;margin-bottom:1rem">Organize Your Work, Securely</h1>
+<p style="color:var(--text-muted);max-width:500px;margin:0 auto 2rem">A lightweight task manager for freelancers and small teams. Login protection, real‑time dashboard, and privacy first.</p>
+<a href="#register" class="btn btn-primary">Get Started</a>
+</main>
+</section>
+
+<!-- Auth Modals -->
+<div id="auth-modal" class="modal-overlay" style="display:none">
+<div class="modal">
+<div id="auth-tabs">
+<button class="tab active" data-tab="login">Log In</button>
+<button class="tab" data-tab="register">Sign Up</button>
+</div>
+<form id="auth-form">
+<div class="tab-content active" id="login-tab">
+<div class="form-group">
+<label>Email</label>
+<input type="email" id="login-email" required>
+</div>
+<div class="form-group">
+<label>Password</label>
+<input type="password" id="login-password" required>
+</div>
+<button type="submit" class="btn btn-primary w-full">Log In</button>
+<p class="mt-2" id="login-switch">Don't have an account? <a href="#" id="to-register">Sign Up</a></p>
+</div>
+<div class="tab-content" id="register-tab">
+<div class="form-group">
+<label>Email</label>
+<input type="email" id="register-email" required>
+</div>
+<div class="form-group">
+<label>Password (min 8 chars)</label>
+<input type="password" id="register-password" required>
+</div>
+<div class="form-group">
+<label>Confirm Password</label>
+<input type="password" id="register-confirm" required>
+</div>
+<button type="submit" class="btn btn-primary w-full">Create Account</button>
+<p class="mt-2" id="register-switch">Already have an account? <a href="#" id="to-login">Log In</a></p>
+</div>
+</form>
+</div>
+</div>
+
+<!-- Dashboard -->
+<section id="dashboard" class="container" style="display:none">
+<header class="header">
+<div>
+<h1>Dashboard</h1>
+<div class="text-sm text-muted">Welcome back, <span id="user-email"></span></div>
+</div>
+<div class="nav">
+<button id="theme-toggle" class="toggle-theme">🌓 Dark Mode</button>
+<button id="logout-btn" class="btn btn-danger">Log Out</button>
+</div>
+</header>
+<div class="sidebar">
+<h2>Navigation</h2>
+<nav>
+<button class="nav-btn active" data-view="overview">Overview</button>
+<button class="nav-btn" data-view="tasks">Tasks</button>
+<button class="nav-btn" data-view="settings">Settings</button>
+</nav>
+</div>
+<div class="main">
+<div id="view-overview">
+<div class="stats-grid">
+<div class="stat-card">
+<h3>Total Tasks</h3>
+<div class="value" id="total-tasks">0</div>
+</div>
+<div class="stat-card">
+<h3>Completed</h3>
+<div class="value" id="completed-tasks">0</div>
+</div>
+<div class="stat-card">
+<h3>Overdue</h3>
+<div class="value" id="overdue-tasks">0</div>
+</div>
+<div class="stat-card">
+<h3>Due Today</h3>
+<div class="value" id="due-today-tasks">0</div>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem">
+<div class="chart-container">
+<canvas id="priorityChart"></canvas>
+</div>
+<div class="chart-container">
+<canvas id="weeklyChart"></canvas>
+</div>
+</div>
+<div class="upcoming-tasks">
+<h2>Upcoming Tasks</h2>
+<div id="upcoming-list"></div>
+</div>
+</div>
+<div id="view-tasks">
+<h2>Task List</h2>
+<button id="add-task-btn" class="btn btn-primary mb-2">+ Add Task</button>
+<div id="task-filters">
+<select id="filter-status">
+<option value="all">All Status</option>
+<option value="todo">To Do</option>
+<option value="in_progress">In Progress</option>
+<option value="done">Done</option>
+</select>
+<select id="filter-priority">
+<option value="all">All Priority</option>
+<option value="low">Low</option>
+<option value="medium">Medium</option>
+<option value="high">High</option>
+</select>
+<select id="filter-category">
+<option value="all">All Categories</option>
+</select>
+</div>
+<div id="task-list"></div>
+</div>
+<div id="view-settings">
+<h2>Settings</h2>
+<div class="form-group">
+<label>Dark Mode</label>
+<label class="toggle-theme" style="margin-left:1rem;">
+<input type="checkbox" id="settings-dark"> Enable
+</label>
+</div>
+<div class="form-group">
+<label>New Email</label>
+<input type="email" id="settings-email">
+</div>
+<div class="form-group">
+<label>New Password</label>
+<input type="password" id="settings-password">
+</div>
+<button id="save-settings-btn" class="btn btn-primary">Save Changes</button>
+<button id="delete-account-btn" class="btn btn-danger">Delete Account</button>
+</div>
+</div>
+</section>
+</div>
+
+<script>
+/* Mock Auth & Data Management */
+const STORAGE_KEY = 'vibe-app-data';
+let currentUser = null;
+let tasks = []; // array of task objects
+
+function getData(){
+const raw = localStorage.getItem(STORAGE_KEY);
+return raw ? JSON.parse(raw) : {users:{}};
+}
+function setData(data){
+localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+function register(email,password){
+const data = getData();
+if(data.users[email]){
+return {error:'User already exists'};
+}
+data.users[email] = {password_hash: btoa(password), tasks:[]};
+setData(data);
+return {success:true};
+}
+function login(email,password){
+const data = getData();
+const user = data.users[email];
+if(!user || user.password_hash !== btoa(password)){
+return {error:'Invalid credentials'};
+}
+currentUser = email;
+tasks = user.tasks || [];
+return {success:true, user:{email}};
+}
+function loadUserTasks(){
+const data = getData();
+const user = data.users[currentUser];
+if(user){
+tasks = user.tasks || [];
+}
+}
+function saveUserTasks(){
+const data = getData();
+if(data.users[currentUser]){
+data.users[currentUser].tasks = tasks;
+setData(data);
+}
+}
+
+/* Task Class */
+class Task{
+constructor({id,title,description='',status='todo',priority='medium',category='',due_date=''}){
+this.id = id || crypto.randomUUID();
+this.title = title;
+this.description = description;
+this.status = status;
+this.priority = priority;
+this.category = category;
+this.due_date = due_date; // ISO date string
+}
+}
+
+/* UI Rendering */
+const app = document.getElementById('app');
+const landing = document.getElementById('landing');
+const authModal = document.getElementById('auth-modal');
+const dashboard = document.getElementById('dashboard');
+const loginForm = document.getElementById('auth-form');
+const loginEmail = document.getElementById('login-email');
+const loginPassword = document.getElementById('login-password');
+const registerEmail = document.getElementById('register-email');
+const registerPassword = document.getElementById('register-password');
+const registerConfirm = document.getElementById('register-confirm');
+const userEmailSpan = document.getElementById('user-email');
+const themeToggleBtn = document.getElementById('theme-toggle');
+const logoutBtn = document.getElementById('logout-btn');
+const addTaskBtn = document.getElementById('add-task-btn');
+const taskFilters = {
+status: document.getElementById('filter-status'),
+priority: document.getElementById('filter-priority'),
+category: document.getElementById('filter-category')
+};
+const taskListEl = document.getElementById('task-list');
+const upcomingListEl = document.getElementById('upcoming-list');
+const stats = {
+total: document.getElementById('total-tasks'),
+completed: document.getElementById('completed-tasks'),
+overdue: document.getElementById('overdue-tasks'),
+dueToday: document.getElementById('due-today-tasks')
+};
+const priorityChartCanvas = document.getElementById('priorityChart');
+const weeklyChartCanvas = document.getElementById('weeklyChart');
+const navButtons = document.querySelectorAll('.nav-btn');
+const views = {
+overview: document.getElementById('view-overview'),
+tasks: document.getElementById('view-tasks'),
+settings: document.getElementById('view-settings')
+};
+const settingsDark = document.getElementById('settings-dark');
+const settingsEmail = document.getElementById('settings-email');
+const settingsPassword = document.getElementById('settings-password');
+const saveSettingsBtn = document.getElementById('save-settings-btn');
+const deleteAccountBtn = document.getElementById('delete-account-btn');
+
+/* Helper Functions */
+function showSection(id){
+['landing','dashboard'].forEach(s=>document.getElementById(s).style.display = s===id ? 'block' : 'none');
+if(id==='dashboard'){
+loadUserTasks();
+renderOverview();
+renderTaskList();
+renderUpcoming();
+}
+}
+function showAuth(){
+authModal.style.display = 'flex';
+}
+function hideAuth(){
+authModal.style.display = 'none';
+loginForm.reset();
+}
+function setActiveTab(tab){
+document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+document.querySelectorAll('.tab-content').forEach(c=>c.classList.toggle('active',c.id===tab+'-tab'));
+}
+function renderOverview(){
+// stats
+const total = tasks.length;
+const completed = tasks.filter(t=>t.status==='done').length;
+const overdue = tasks.filter(t=>{
+return t.due_date && new Date(t.due_date) < new Date().setHours(0,0,0,0) && t.status!=='done';
+}).length;
+const dueToday = tasks.filter(t=>{
+return t.due_date && new Date(t.due_date).to

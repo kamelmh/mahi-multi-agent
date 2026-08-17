@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Vibe Finance Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-dark: #0f172a;
+    --bg-card: #1e293b;
+    --text-primary: #f8fafc;
+    --text-muted: #94a3b8;
+    --accent: #6366f1;
+    --accent-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --border: #334155;
+    --radius: 0.75rem;
+    --transition: 0.2s ease;
+  }
+  [data-theme="light"] {
+    --bg-dark: #ffffff;
+    --bg-card: #f8fafc;
+    --text-primary: #0f172a;
+    --text-muted: #64748b;
+    --accent: #3b82f6;
+    --accent-gradient: linear-gradient(135deg, #3b82f6, #06b6d4);
+    --success: #059669;
+    --danger: #dc2626;
+    --warning: #d97706;
+    --border: #e2e8f0;
+  }
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+  }
+  a { color: inherit; text-decoration: none; }
+  button, input, select { font-family: inherit; }
+  /* Layout */
+  .sidebar {
+    width: 260px;
+    background: var(--bg-card);
+    border-right: 1px solid var(--border);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: fixed;
+    height: 100vh;
+    top:0; left:0;
+    z-index: 10;
+    transition: transform 0.3s ease;
+  }
+  .sidebar.closed { transform: translateX(-100%); }
+  .sidebar-header { display:flex; align-items:center; gap:0.75rem; }
+  .sidebar-header h2 { font-size:1.25rem; font-weight:600; }
+  .nav-link {
+    display:flex; align-items:center; gap:0.75rem; padding:0.5rem 0.75rem;
+    border-radius: var(--radius); color:var(--text-muted);
+    font-size:0.95rem; transition: background var(--transition), color var(--transition);
+  }
+  .nav-link:hover, .nav-link.active { background:var(--accent); color:var(--text-primary); }
+  .theme-toggle {
+    margin-top:auto; padding-top:1rem; border-top:1px solid var(--border);
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:0.9rem;
+  }
+  .theme-toggle button {
+    background:none; border:none; color:var(--text-muted); cursor:pointer;
+    display:flex; align-items:center; gap:0.25rem;
+  }
+  .theme-toggle button:hover { color:var(--text-primary); }
+  .main {
+    flex:1; margin-left:260px; padding:2rem; width:100%;
+    transition: margin-left .3s ease;
+  }
+  .main.shifted { margin-left:0; }
+  header {
+    display:flex; justify-content:space-between; align-items:center;
+    flex-wrap:wrap; gap:1rem; margin-bottom:2rem;
+  }
+  header h1 { font-size:1.75rem; font-weight:600; }
+  .search-bar {
+    display:flex; gap:0.5rem; min-width:200px;
+  }
+  .search-bar input {
+    flex:1; padding:0.5rem 0.75rem; border:1px solid var(--border);
+    border-radius:var(--radius); background:var(--bg-dark); color:var(--text-primary);
+  }
+  .search-bar input::placeholder { color:var(--text-muted); }
+  .search-bar button {
+    background:var(--accent-gradient); color:#fff; border:none;
+    padding:0 1rem; border-radius:var(--radius); cursor:pointer;
+  }
+  .stats-grid {
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr));
+    gap:1.5rem; margin-bottom:2rem;
+  }
+  .stat-card {
+    background:var(--bg-card); border:1px solid var(--border);
+    border-radius:var(--radius); padding:1.5rem; text-align:center;
+    position:relative; overflow:hidden;
+  }
+  .stat-card::before {
+    content:""; position:absolute; inset:0; background:var(--accent-gradient);
+    opacity:0.15; pointer-events:none;
+  }
+  .stat-card h3 { font-size:0.9rem; color:var(--text-muted); margin-bottom:0.5rem; }
+  .stat-card .value { font-size:1.8rem; font-weight:600; }
+  .stat-card .change { font-size:0.85rem; margin-top:0.3rem; display:flex; align-items:center; gap:0.25rem; justify-content:center; }
+  .change.positive { color:var(--success); }
+  .change.negative { color:var(--danger); }
+  .section-title {
+    font-size:1.25rem; font-weight:600; margin-bottom:1rem;
+    display:flex; align-items:center; gap:0.5rem;
+  }
+  .transactions {
+    background:var(--bg-card); border:1px solid var(--border);
+    border-radius:var(--radius); padding:1.5rem;
+  }
+  .transactions table { width:100%; border-collapse:collapse; }
+  .transactions th, .transactions td {
+    padding:0.75rem; text-align:left; border-bottom:1px solid var(--border);
+    font-size:0.9rem;
+  }
+  .transactions th { color:var(--text-muted); }
+  .transactions tbody tr:hover { background:rgba(255,255,255,0.02); }
+  .amount.expense { color:var(--danger); }
+  .amount.income { color:var(--success); }
+  .quick-add {
+    background:var(--bg-card); border:1px solid var(--border);
+    border-radius:var(--radius); padding:1.5rem; margin-top:1.5rem;
+  }
+  .quick-add form { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px,1fr)); gap:1rem; align-items:end; }
+  .quick-add input, .quick-add select {
+    width:100%; padding:0.5rem; border:1px solid var(--border);
+    border-radius:var(--radius); background:var(--bg-dark); color:var(--text-primary);
+  }
+  .quick-add button {
+    background:var(--accent-gradient); color:#fff; border:none;
+    padding:0.5rem 1rem; border-radius:var(--radius); cursor:pointer;
+    font-weight:600;
+  }
+  .charts {
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr));
+    gap:1.5rem;
+  }
+  .chart-card {
+    background:var(--bg-card); border:1px solid var(--border);
+    border-radius:var(--radius); padding:1.5rem;
+  }
+  .chart-card canvas { width:100%; height:200px; }
+  footer {
+    margin-top:auto; text-align:center; padding:1.5rem;
+    font-size:0.85rem; color:var(--text-muted);
+    border-top:1px solid var(--border);
+  }
+  /* Mobile adjustments */
+  @media (max-width:768px) {
+    .sidebar { transform:translateX(-100%); }
+    .main.shifted { margin-left:0; }
+    .sidebar.open { transform:translateX(0); }
+    .header-content { flex-direction:column; align-items:flex-start; }
+    .search-bar { width:100%; }
+  }
+  /* Sidebar overlay for mobile */
+  .sidebar-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,0.5);
+    display:none; z-index:9;
+  }
+  .sidebar-overlay.active { display:block; }
+</style>
+</head>
+<body>
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16z"/></svg>
+    <h2>Vibe</h2>
+  </div>
+  <nav>
+    <a href="#dashboard" class="nav-link active"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9h18V7H3v2zm0 4h18v-2H3v2zm0 4h18v-2H3v2z"/></svg>Dashboard</a>
+    <a href="#transactions" class="nav-link"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-6 9h-4v-3H7v-2h4V8l4 4h2v3z"/></svg>Transactions</a>
+    <a href="#budgets" class="nav-link"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4 10H9v-3h6v3zm4-4H9V7h10v2z"/></svg>Budgets</a>
+    <a href="#settings" class="nav-link"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.58-1.69.98l-2.49-1c-.22-.08-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.04.24.25.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.58 1.69-.98l2.49 1c.22.08.49 0 .61-.22l2-3.46c.13-.22.07-.49-.12-.64z"/></svg>Settings</a>
+  </nav>
+  <div class="theme-toggle">
+    <span>Dark Mode</span>
+    <button id="themeBtn" aria-label="Toggle theme">
+      <svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 4.5a1 1 0 0 1 1 1V12a1 1 0 0 1-2 0V5.5a1 1 0 0 1 1-1zm0 13a1 1 0 0 1 1 1v1.5a1 1 0 0 1-2 0V18a1 1 0 0 1 1-1zm10.35-3.54a1 1 0 0 1 0 1.41l-1.06 1.06a1 1 0 0 1-1.42 0l-1.06-1.06a1 1 0 0 1 1.42-1.41l1.06 1.06zm-9.7 0a1 1 0 0 1 0 1.41l-1.06 1.06a1 1 0 0 1-1.42 0l-1.06-1.06a1 1 0 0 1 1.42-1.41l1.06 1.06zm10.71-10.71a1 1 0 0 1 0 1.41l-1.06 1.06a1 1 0 0 1-1.42 0l-1.06-1.06a1 1 0 0 1 1.42-1.41l1.06 1.06zm-9.7 0a1 1 0 0 1 0 1.41l-1.06 1.06a1 1 0 0 1-1.42 0l-1.06-1.06a1 1 0 0 1 1.42-1.41l1.06 1.06zM1

@@ -11,7 +11,7 @@ def create_spiritual_agent() -> BaseAgent:
         model_fallback="google/gemma-4-31b-it:free",
         provider="openrouter",
         capabilities=["vedic astrology", "quranic study", "spiritual guidance", "meditation"],
-        tools=["file_read", "file_write"],
+        tools=["file_read", "file_write", "file_search"],
         max_concurrent=1,
         timeout=60,
     )

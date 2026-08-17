@@ -1,0 +1,20 @@
+{
+  "pitch": "Unified, secure task dashboard for pros, freelancers & teams \u2014 see progress, avoid missed deadlines.",
+  "description": "Our platform consolidates tasks from email, notes, and apps into a single secure dashboard, giving professionals real\u2011time visibility into workload and upcoming deadlines. By reducing context switching and duplicated effort, teams can focus on execution rather than organization. Built for freelancers and small teams that need simplicity without sacrificing security.",
+  "tags": [
+    "task management",
+    "productivity tool",
+    "unified dashboard",
+    "secure task tracker",
+    "freelance workflow"
+  ],
+  "launch_checklist": [
+    "Complete final QA and bug\u2011fix sprint",
+    "Prepare press release and media kit",
+    "Create demo video and screenshots",
+    "Schedule social media announcements and paid ads",
+    "Set up analytics dashboards (mixpanel, GA4)",
+    "Train customer support on common issues and FAQs",
+    "Monitor launch metrics and iterate within 48\u202fhours"
+  ]
+}

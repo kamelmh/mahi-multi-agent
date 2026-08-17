@@ -12,7 +12,7 @@ def create_career_agent() -> BaseAgent:
         model_fallback="openai/gpt-oss-20b:free",
         provider="openrouter",
         capabilities=["cv writing", "cover letters", "job search", "linkedin", "interview prep"],
-        tools=["file_read", "file_write", "web_search"],
+        tools=["file_read", "file_write", "web_search", "file_search"],
         max_concurrent=1,
         timeout=120,
     )

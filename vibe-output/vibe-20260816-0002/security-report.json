@@ -1,0 +1,25 @@
+{
+  "score": 25,
+  "checks": {
+    "input_validation": false,
+    "sql_injection": true,
+    "xss_prevention": false,
+    "secret_management": false,
+    "auth_authorization": false,
+    "rate_limiting": false,
+    "cors_configuration": false,
+    "error_handling": false
+  },
+  "recommendations": [
+    "Add input validation for all incoming data (e.g., using Marshmallow or Pydantic).",
+    "Implement complete JWT verification in token_required decorator (decode, check expiration, validate signature).",
+    "Remove default SECRET_KEY; enforce environment variable and raise error if missing.",
+    "Use bcrypt to hash passwords before storing and verify during login.",
+    "Add rate limiting (e.g., Flask-Limiter) on authentication endpoints.",
+    "Configure CORS with a whitelist of trusted origins; avoid fallback to localhost in production.",
+    "Add security headers (CSP, HSTS, X-Content-Type-Options) via Flask-Talisman or similar.",
+    "Implement centralized error handling that returns JSON responses and does not leak stack traces.",
+    "Consider implementing refresh token rotation and storing hashes only.",
+    "Use HTTPS in production and set Secure flag on cookies if any."
+  ]
+}
