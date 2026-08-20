@@ -49,6 +49,14 @@ Code Style:
 
 {coding_rules}
 
+## Critical Thinking (AI Creative OS 80/20)
+Before implementing, apply these checks:
+- "What are the 3 biggest risks here?"
+- "What's the weakest part of this design?"
+- "What am I missing or not thinking about?"
+- "What would a senior engineer disagree with here?"
+- "What's the most common mistake with this pattern?"
+
 Always respond with the code or a clear explanation. Be concise."""
 
         def execute(self, task: Task) -> str:
