@@ -11,7 +11,7 @@ def create_research_agent() -> BaseAgent:
         model_fallback="openai/gpt-oss-20b:free",
         provider="openrouter",
         capabilities=["web search", "analysis", "comparison", "summarization", "fact-checking"],
-        tools=["web_search", "file_read", "file_write", "file_search"],
+        tools=["web_search", "file_read", "file_write", "file_search", "scrape"],
         max_concurrent=1,
         timeout=120,
     )

@@ -127,12 +127,44 @@ class ToolRegistry:
         except Exception as e:
             return {"error": str(e)}
 
+    # --- stealth web scraping (via Scrapling) ---
+    def scrape(self, url: str, selector: str = None, stealth: bool = True) -> dict:
+        """Scrape a URL using Scrapling with optional stealth mode and CSS selector."""
+        try:
+            if stealth:
+                from scrapling.fetchers import StealthyFetcher
+                fetcher = StealthyFetcher()
+            else:
+                from scrapling import Fetcher
+                fetcher = Fetcher()
+            page = fetcher.fetch(url)
+            result = {"success": True, "status": page.status, "url": url}
+            if selector:
+                elements = page.css(selector)
+                result["elements"] = [
+                    {"text": el.text, "html": str(el), "attrib": dict(el.attrib)}
+                    for el in elements[:20]
+                ]
+                result["count"] = len(elements)
+            else:
+                result["title"] = page.css("title")[0].text if page.css("title") else ""
+                result["text"] = page.get_all_text()[:3000] if hasattr(page, "get_all_text") else ""
+                result["links"] = [
+                    {"href": a.attrib.get("href", ""), "text": a.text}
+                    for a in page.css("a")[:15]
+                ]
+            return result
+        except ImportError:
+            return {"success": False, "error": "scrapling not installed — pip install scrapling[all]"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
     # --- utility: detect tool intent from task text ---
     def detect_intent(self, text: str) -> list[tuple[str, dict]]:
         """Detect which tool(s) the task is asking for, returning (tool_name, kwargs)."""
         low = text.lower()
         results = []
-        tools = {"file_search", "pdf_extract", "pdf_summarize", "web_search"}
+        tools = {"file_search", "pdf_extract", "pdf_summarize", "web_search", "scrape"}
         # PDF detection: if a .pdf path is mentioned
         if "pdf_extract" in tools or "pdf_summarize" in tools:
             for m in re.finditer(r"([A-Za-z]:\\[\w\\ .\-]+\.pdf|[\w\-/]+\.pdf)", text):
@@ -153,6 +185,11 @@ class ToolRegistry:
             m = re.search(r"(?:web search|search the web|look up online|latest news on|research)\s+['\"]?([^'\"]{2,120})", low)
             if m:
                 results.append(("web_search", {"query": m.group(1).strip()}))
+        # Scrape: explicit URL or scrape/fetch/crawl command
+        if "scrape" in tools:
+            m = re.search(r"(?:scrape|fetch|crawl|extract from)\s+(https?://[^\s'\"]+)", low)
+            if m:
+                results.append(("scrape", {"url": m.group(1).strip()}))
         # Deduplicate by tool name, keep first
         seen = set()
         uniq = []
@@ -187,3 +224,6 @@ class ToolRegistry:
 
     def _web_search(self, query: str, max_results: int = 6) -> dict:
         return self.web_search(query, max_results=max_results)
+
+    def _scrape(self, url: str, selector: str = None, stealth: bool = True) -> dict:
+        return self.scrape(url, selector=selector, stealth=stealth)

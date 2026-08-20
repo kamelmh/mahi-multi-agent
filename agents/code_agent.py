@@ -13,7 +13,7 @@ def create_code_agent() -> BaseAgent:
         model_premium="nvidia/nemotron-3-super-120b-a12b:free",
         provider="openrouter",
         capabilities=["code generation", "code review", "debugging", "refactoring", "testing"],
-        tools=["file_read", "file_write", "terminal", "git", "file_search"],
+        tools=["file_read", "file_write", "terminal", "git", "file_search", "scrape"],
         max_concurrent=2,
         timeout=120,
     )

@@ -101,6 +101,30 @@ APPS = [
         "launch": ["floci", "start"],
         "check": ["floci", "status"],
     },
+    {
+        "id": "dsh",
+        "name": "DeepSeek Harness",
+        "icon": "🔍",
+        "desc": "DeepSeek agent harness — web UI for coding, file ops, shell, web search",
+        "url": "http://localhost:8500",
+        "port": 8500,
+        "type": "local",
+        "cwd": str(Path(__file__).parent.parent.parent),
+        "launch": ["npx", "@deepseek-ai/dsh", "web", "--port", "8500"],
+        "check": ["npx", "@deepseek-ai/dsh", "--version"],
+    },
+    {
+        "id": "harness",
+        "name": "Harness Router (UHP)",
+        "icon": "🔗",
+        "desc": "UHP-compatible harness router — routes tasks to agents via OpenRouter/Groq",
+        "url": "http://localhost:8600",
+        "port": 8600,
+        "type": "local",
+        "cwd": str(Path(__file__).parent.parent.parent),
+        "launch": [sys.executable, "harness_router.py", "8600"],
+        "check": [sys.executable, "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8600/health')"],
+    },
 ]
 
 WIN_LAUNCH_FLAGS = 0
