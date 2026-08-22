@@ -865,6 +865,13 @@
                     <button class="hub-refresh" id="hub-refresh-btn" onclick="refreshHub()"><span class="refresh-icon">🔄</span> Refresh</button>
                 </div>
                 <div class="hub-apps-grid" id="hub-grid"></div>
+                <div class="section" style="margin-top:20px">
+                    <div class="section-header">
+                        <div class="section-title">CI Status <span class="section-badge">repos</span></div>
+                        <button class="hub-refresh" onclick="refreshCI()"><span class="refresh-icon">🔄</span> Refresh</button>
+                    </div>
+                    <div id="ci-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px"></div>
+                </div>
                 <div class="hub-embedded">
                     <div class="hub-iframe-wrap">
                         <div class="hub-iframe-header" id="hub-iframe-header" style="display:none">
@@ -2049,6 +2056,7 @@
             if (el) el.classList.toggle('hidden', s !== id);
         });
         if (id === 'graph') { buildGraph(); setTimeout(renderGraph, 100); }
+        if (id === 'hub') { refreshHub(); refreshCI(); }
     }
 
     // === SEARCH ===
@@ -2267,7 +2275,8 @@
         { id: "spiritual", name: "Spiritual Dashboard", icon: "🕯️", desc: "Astrology + Quran practice dashboard (live)", url: "https://mahi-spiritual.netlify.app", type: "live" },
         { id: "academix", name: "Academix DSS Web", icon: "📦", desc: "VBA DSS web viewer (Univer)", url: "http://localhost:5173", type: "local", port: 5173 },
         { id: "sis", name: "SIS Ta'allim", icon: "🏫", desc: "Student Information System + Teaching Tools (session notes, exams, digitizer)", url: "http://localhost:5000", type: "local", port: 5000 },
-        { id: "floci", name: "Floci AWS Local", icon: "☁️", desc: "Local AWS emulator: S3, DynamoDB, Lambda — no cloud account", url: "http://localhost:4566", type: "local", port: 4566 }
+        { id: "floci", name: "Floci AWS Local", icon: "☁️", desc: "Local AWS emulator: S3, DynamoDB, Lambda — no cloud account", url: "http://localhost:4566", type: "local", port: 4566 },
+        { id: "dsh", name: "DeepSeek Harness", icon: "🔍", desc: "DeepSeek agent harness — web UI for coding, file ops, shell, web search", url: "http://localhost:8500", type: "local", port: 8500 }
     ];
     let hubLive = {};
 
@@ -2298,6 +2307,40 @@
             hubApps.forEach(function(a) { hubLive[a.id] = { id: a.id, running: a.type === 'live', status: a.type === 'live' ? 'live' : 'unknown' }; });
         }
         renderHub();
+    }
+
+    async function refreshCI() {
+        var grid = document.getElementById('ci-grid');
+        if (!grid) return;
+        grid.innerHTML = '<div style="color:var(--text-muted);font-size:0.85rem;padding:12px">Loading CI status...</div>';
+        try {
+            var res = await fetch('/api/ci-status', { cache: 'no-store' });
+            if (!res.ok) throw new Error(String(res.status));
+            var data = await res.json();
+            renderCI(data.repos || []);
+        } catch (e) {
+            grid.innerHTML = '<div style="color:var(--text-muted);font-size:0.85rem;padding:12px">CI status unavailable: ' + e.message + '</div>';
+        }
+    }
+
+    function renderCI(repos) {
+        var grid = document.getElementById('ci-grid');
+        if (!grid) return;
+        grid.innerHTML = repos.map(function(r) {
+            var statusColor = r.status === 'clean' ? '#10b981' : r.status === 'dirty' ? '#f59e0b' : r.status === 'missing' ? '#6b7280' : '#ef4444';
+            var statusLabel = r.status === 'clean' ? 'Clean' : r.status === 'dirty' ? r.uncommitted + ' uncommitted' : r.status === 'missing' ? 'Not found' : 'Error';
+            return '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px">' +
+                '<div style="display:flex;justify-content:space-between;align-items:center">' +
+                    '<span style="font-weight:600;font-size:0.9rem;color:var(--text)">' + r.name + '</span>' +
+                    '<span style="display:inline-flex;align-items:center;gap:5px;font-size:0.78rem;color:' + statusColor + '">' +
+                        '<span style="width:7px;height:7px;border-radius:50%;background:' + statusColor + ';display:inline-block"></span>' +
+                        statusLabel +
+                    '</span>' +
+                '</div>' +
+                (r.branch ? '<div style="font-size:0.78rem;color:var(--text-muted)">branch: ' + r.branch + '</div>' : '') +
+                (r.last_commit ? '<div style="font-size:0.78rem;color:var(--text-muted)">' + r.last_commit + '</div>' : '') +
+            '</div>';
+        }).join('');
     }
 
     function renderHub() {

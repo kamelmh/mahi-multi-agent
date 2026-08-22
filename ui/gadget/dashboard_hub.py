@@ -351,6 +351,49 @@ class AppManager:
         st["error"] = None
         return {"ok": True, "killed": killed}
 
+    # --- CI status --------------------------------------------------------
+    REPOS = [
+        {"name": "mahi-multi-agent", "path": r"C:\Users\Admin\projects\active\agents\mahi-multi-agent"},
+        {"name": "digital-services-center", "path": r"C:\Users\Admin\projects\active\apps\digital-services-center"},
+        {"name": "academix-dss", "path": r"C:\Users\Admin\projects\active\apps\academix-dss"},
+        {"name": "logistics-public-sector-refactor", "path": r"C:\Users\Admin\projects\active\umbrella\logistics-public-sector-refactor"},
+        {"name": "lsm-vba-core", "path": r"C:\Users\Admin\projects\active\libs\lsm-vba-core"},
+        {"name": "mahi-spiritual", "path": r"C:\Users\Admin\projects\active\apps\mahi-spiritual"},
+    ]
+
+    def ci_status(self):
+        """Check git status + last commit for each repo."""
+        results = []
+        for repo in self.REPOS:
+            p = Path(repo["path"])
+            if not p.exists():
+                results.append({"name": repo["name"], "status": "missing", "branch": "", "last_commit": "", "dirty": False})
+                continue
+            try:
+                branch = subprocess.run(
+                    ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+                    cwd=str(p), capture_output=True, text=True, timeout=10
+                ).stdout.strip()
+                last = subprocess.run(
+                    ["git", "log", "-1", "--format=%h %s (%cr)"],
+                    cwd=str(p), capture_output=True, text=True, timeout=10
+                ).stdout.strip()
+                dirty = subprocess.run(
+                    ["git", "status", "--porcelain"],
+                    cwd=str(p), capture_output=True, text=True, timeout=10
+                ).stdout.strip()
+                results.append({
+                    "name": repo["name"],
+                    "status": "dirty" if dirty else "clean",
+                    "branch": branch,
+                    "last_commit": last,
+                    "dirty": bool(dirty),
+                    "uncommitted": len(dirty.splitlines()) if dirty else 0,
+                })
+            except Exception as e:
+                results.append({"name": repo["name"], "status": "error", "error": str(e)})
+        return {"repos": results}
+
 
 class HubHandler(BaseHTTPRequestHandler):
     manager = AppManager()
@@ -383,6 +426,8 @@ class HubHandler(BaseHTTPRequestHandler):
         path = urlparse(self.path).path
         if path == "/api/apps":
             return self._send(200, self.manager.all_status())
+        if path == "/api/ci-status":
+            return self._send(200, self.manager.ci_status())
         m = re.match(r"^/api/apps/([\w-]+)/status$", path)
         if m:
             app = find_app(m.group(1))
