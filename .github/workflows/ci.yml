@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install deps
+        run: pip install pytest
+      - name: Compile check
+        run: python -m compileall -q agents/ tools/ harness_router.py -q
+      - name: Lint imports
+        run: python -c "from tools.registry import TOOL_DEFS; from harness_router import run_swarm_task, distribute_task, search_knowledge_base; print(f'OK: {len(TOOL_DEFS)} tools, 3 functions')"

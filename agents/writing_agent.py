@@ -1,4 +1,4 @@
-"""Writing Agent — emails, proposals, documentation."""
+"""Writing Agent - emails, proposals, documentation."""
 from agents.base import BaseAgent, AgentConfig, Task, LIFEWORKSPACE
 import os
 
@@ -73,6 +73,8 @@ For each day vary: hook type, visual form, content angle
 - "Give me 10 headline options. Go from safe to risky."
 - "Rewrite the hook 5 different ways. Use a different angle each time."
 
+        """
+
         def execute(self, task: Task) -> str:
             messages = self._build_context(task)
             model = task.model or self.config.model_primary
@@ -97,7 +99,7 @@ def create_writing_pro_agent() -> BaseAgent:
 
     class WritingProAgent(BaseAgent):
         def _default_system_prompt(self) -> str:
-            return """You are the Writing Pro Agent — premium writing for high-stakes situations.
+            return """You are the Writing Pro Agent - premium writing for high-stakes situations.
 
 Expert in:
 - Client proposals and cover letters

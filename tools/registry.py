@@ -15,6 +15,90 @@ FILE_SEARCH = MAHI_ROOT / "tools" / "file-search"
 TMP_DIR = MAHI_ROOT / "tmp"
 
 
+
+# -------------------------------------------------------------------------
+# Tool definitions � can be used by routing guidance and skill composition
+# -------------------------------------------------------------------------
+
+TOOL_DEFS = {
+    "file_search": {
+        "type": "function",
+        "function": {
+            "name": "file_search",
+            "description": "Search files by name under a root directory (default: MAHI brain). Use when the user's question may be answered by finding relevant files in the codebase, docs, or any directory on the system.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {"type": "string", "description": "Search query for file names"},
+                    "root": {"type": "string", "description": "Root directory to search under"},
+                    "content": {"type": "boolean", "description": "If True, search file contents instead of names"},
+                    "limit": {"type": "integer", "description": "Maximum number of results to return"},
+                },
+                "required": ["query"],
+            },
+        },
+    },
+    "pdf_extract": {
+        "type": "function",
+        "function": {
+            "name": "pdf_extract",
+            "description": "Extract text and metadata from a PDF file. Use when the user needs content from a specific PDF document.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "pdf_path": {"type": "string", "description": "Path to the PDF file to extract"},
+                },
+                "required": ["pdf_path"],
+            },
+        },
+    },
+    "pdf_summarize": {
+        "type": "function",
+        "function": {
+            "name": "pdf_summarize",
+            "description": "Summarize a PDF document. Use when the user wants a quick overview of a PDF's content.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "pdf_path": {"type": "string", "description": "Path to the PDF file to summarize"},
+                },
+                "required": ["pdf_path"],
+            },
+        },
+    },
+    "web_search": {
+        "type": "function",
+        "function": {
+            "name": "web_search",
+            "description": "Search the web via hound CLI. Use when the user needs current information, latest news, or external references.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {"type": "string", "description": "Search query for web results"},
+                    "max_results": {"type": "integer", "description": "Maximum number of results to return"},
+                },
+                "required": ["query"],
+            },
+        },
+    },
+    "scrape": {
+        "type": "function",
+        "function": {
+            "name": "scrape",
+            "description": "Scrape a URL using Scrapling with stealth mode. Use when the user needs to extract structured data from a web page.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "url": {"type": "string", "description": "URL to scrape"},
+                    "selector": {"type": "string", "description": "Optional CSS selector to filter elements"},
+                    "stealth": {"type": "boolean", "description": "If True, use stealth mode"},
+                },
+                "required": ["url"],
+            },
+        },
+    },
+}
+
 class ToolRegistry:
     """Registry of available tools that agents can invoke."""
 
@@ -25,6 +109,7 @@ class ToolRegistry:
     def file_search(self, query: str, root: Path = None, content: bool = False,
                     limit: int = 20) -> list[dict]:
         """Search files by name under root (default LifeWorkspace)."""
+        root = Path(root) if isinstance(root, str) else root
         root = root or MAHI_ROOT / "brain"  # lightweight default
         if not root.is_dir():
             return []
@@ -227,3 +312,27 @@ class ToolRegistry:
 
     def _scrape(self, url: str, selector: str = None, stealth: bool = True) -> dict:
         return self.scrape(url, selector=selector, stealth=stealth)
+
+    # -------------------------------------------------------------------------
+    # Routing guidance builder — tells the model which tool to pick
+    # -------------------------------------------------------------------------
+
+    def build_routing_guidance(self, available_tools: list[str] = None) -> str:
+        """Build routing guidance string for the model's system prompt.
+
+        This is analogous to AgentSwarms' buildRoutingGuidance() — it tells the
+        model WHEN to use which tool based on the task description.
+        """
+        guidance_parts = [
+            "Tool Routing Guidance:",
+            "- Use **file_search** when the user asks to find, locate, or search for something in the codebase or file system.",
+            "- Use **pdf_extract** when the user asks to extract or read a specific PDF file.",
+            "- Use **pdf_summarize** when the user asks to summarize a PDF.",
+            "- Use **web_search** when the user asks to search the web, look up online, or research current information.",
+            "- Use **scrape** when the user asks to scrape, fetch, or crawl a specific URL.",
+            "- If uncertain which tool to use, start with file_search or web_search to gather context.",
+            "- If multiple tools could apply, prefer the most specific one for the task.",
+            "- If uncertain which tool to use, start with `file_search` or `web_search` to gather context, then use more specialized tools as needed.",
+        ]
+
+        return "\n".join(guidance_parts)
